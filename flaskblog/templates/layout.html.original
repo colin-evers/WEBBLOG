@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+
+      <!-- site font -->
+      <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
+
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+      <!-- local CSS-->
+      
+      <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login.css') }}"> -->
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='study.css') }}">
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
+    </head>
+    <body class="_backdrop">
+    <div class="grid"> 
+    <header class="site-header">
+          <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+              <div class="container">
+                <a class="navbar-brand mr-2" href="/"><h2><span style="font-family:Lobster Two">DJIA Futures &nbsp &nbsp &nbsp</span></h2></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                  <div class="navbar-nav mr-auto">
+                    <a class="nav-item nav-link" href="{{ url_for('main.intro') }}">Intro</a>
+                    <a class="nav-item nav-link" href="{{ url_for('main.methods') }}">Methods</a>
+                    <a class="nav-item nav-link" href="{{ url_for('main.trades') }}">Trades</a>
+                    <a class="nav-item nav-link" href="{{ url_for('main.pnl') }}">P&L</a>
+                  </div>
+                  <!-- Navbar Right Side -->
+                  <div class="navbar-nav">
+                    {% if current_user.is_authenticated and current_user.username == "GuestUser" %}
+                      <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Members Login</a>
+                      <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
+                      <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About</a>
+                    {% else %}
+                      {% if current_user.is_authenticated %}
+                        <a class="nav-item nav-link" href="{{ url_for('posts.new_post') }}">New Post</a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.account') }}">Account</a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
+                        <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About</a>
+                      {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a>
+                        <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About</a>
+                      {% endif %}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+          </nav>
+    </header>
+    <!-- Specify pics by id for single modal display -->
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+        <div id="caption"></div>
+    </div> 
+    <main role="main" class="container-fluid site-header-border-adjust col-md-10">
+      <div class="center-flash-msg">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+      <div>
+        {% block content %}{% endblock %}
+      </div> 
+    </main>
+    <div class="java-scripts">
+            <!-- Optional JavaScript -->
+            <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+            <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+            <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+            <!--Fullest MathML support using MathJax-->
+            <script>window.MathJax = { MathML: { extensions: ["mml3.js", "content-mathml.js"]}};</script>
+            <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=MML_HTMLorMML"></script>
+
+            <!--Jquery for modal pics.... -->
+            <script src="{{url_for('static', filename='js/modalpics.js') }}"></script>
+    <!-- 02/11/22 remove identity
+    </div>
+      <div style="padding-bottom: 15px;">
+      <footer class="container-fluid col-md-10" style="line-height:24px;">
+          <div class="footenote-page">
+            <div class="footenote-inner-div">
+                <div class="container-fluid col-xs-12">
+                  <div class="subgrid location">
+                    <div class="row">
+                      <div class="col-xs-12 custom-400-col-xs-6 col-md-3 col-xl-3">
+                        <h6 class="footer-info"><b>Contact</b></h6>
+                        <div class="container-fluid footer-info"><span class="glyph footer-align"><i class="fas fa-phone"></i></i></span>
+                          <p class="paragraph footer-contact"><span class="contact-link">(646) 509 3155</span>
+                          </p>
+                        </div>
+                        <div class="container-fluid footer-info"><span class="glyph footer-align"><i class="fas fa-at"></i></i></span>
+                          <p class="paragraph footer-contact"><span class="contact-link">evers@gmail.com</span>
+                          </p>
+                        </div>
+                        <div class="container-fluid footer-info"><span class="glyph footer-align"><i class="fas fa-print"></i></i></span>
+                          <p class="paragraph footer-contact"><span class="contact-link">(646) 509 7890</span>
+                          </p>
+                        </div>
+                        <div class="container-fluid footer-info"><span class="glyph footer-align"><i class="fas fa-map-signs"></i></i></span>
+                          <p class="paragraph footer-contact"><span class="contact-link">435 W57th Street</span>
+                          </p>
+                        </div>
+                        <div class="container-fluid footer-info"><span class="glyph footer-align"><i class="fas fa-globe-africa"></i></i></span>
+                          <p class="paragraph footer-contact"><span class="contact-link">New York, NYC</span>
+                          </p>
+                        </div>
+                      </div>
+                      <div class="col-xs-12 custom-400-col-xs-6 col-md-3 col-xl-3">
+                        <h6 class="footer-info"><b>Media</b></h6>
+                          <div class="container-fluid footer-info"><span class="glyph footer-align"><i class="fab fa-facebook-f"></i></i></span>
+                            <a class="link-text footer-content" href="https://www.facebook.com/">Facebook</a>
+                          </div>
+                          <div class="container-fluid footer-info"><span class="glyph footer-align"><i class="fab fa-twitter"></i></i></span>
+                            <a class="link-text footer-content" href="https://twitter.com/">Twitter</a>
+                          </div>
+                          <div class="container-fluid footer-info"><span class="glyph footer-align"><i class="fab fa-google-plus-g"></i></i></span>
+                            <a class="link-text footer-content" href="">GooglePlus</a>
+                          </div>
+                          <div class="container-fluid footer-info"><span class="glyph footer-align"><i class="fab fa-linkedin-in"></i></i></span>
+                            <a class="link-text footer-content" href="https://www.linkedin.com/">LinkedIn</a>
+                          </div>
+                          <div class="container-fluid footer-info"><span class="glyph footer-align"><i class="fab fa-instagram"></i></i></span>
+                            <a class="link-text footer-content" href="https://www.instagram.com/">Instagram</a>
+                          </div>
+                      </div>
+                      <div class="col-xs-12 custom-400-col-xs-6 col-md-3 col-xl-3">
+                        <h6 class="footer-info"><b>Favorites</b></h6>
+                          <ul class="unorder-list footer-info">
+                            <li class="list-item footer-info"><a class="link-text footer-content" href="https://us.econoday.com/byweek.asp?cust=us" target="_blank">Economic Calendar</a></li>
+                            <li class="list-item footer-info"><a class="link-text footer-content" href="https://www.theocc.com/about/publications/expiration-calendar.jsp" target="_blank">Options Expiration</a></li>
+                            <li class="list-item footer-info"><a class="link-text footer-content" href="https://www.drudgereport.com/" target="_blank">Drudge Report</a></li>
+                            <li class="list-item footer-info"><a class="link-text footer-content" href="https://www.zerohedge.com/" target="_blank">Zero Hedge</a></li>
+                          </ul>
+                      </div>
+                      <div class="col-xs-12 custom-400-col-xs-6 col-md-3 col-xl-3">
+                        <h6 class="footer-info"><b>Information</b></h6>
+                          <ul class="link-list info">
+                            <li class="list-item-link"><a href="#">FAQ</a>
+                            </li>
+                            <li class="list-item-link"><a href="#">About the Company</a>
+                            </li>
+                            <li class="list-item-link"><a href="#">Contact Us</a>
+                            </li>
+                            <li class="list-item-link"><a href="#">Site Map</a>
+                            </li>
+                          </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div></footer>
+      </div>
+    </div>
+    --> 
+    
+    </body>
+  
+</html>

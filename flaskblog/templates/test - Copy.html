@@ -1,0 +1,430 @@
+{% extends "layout.html" %}
+{% block content %}
+  <article class="media content-section" style="border:none;">
+    <img class="article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+    <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+        <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+        {% if post.author == current_user %}
+          <div>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>
+            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+          </div>
+        {% endif %}
+      </div>
+      <center><br><h3 class="hero-header">{{ post.title }}</h3><hr><br></center>
+      {% if weekly |length %}
+      <center><button onclick="myDetach()">View Trades</button></center>
+      <br>
+      <script>
+        function myDetach() {
+        var myWin = window.open( '/detach_viewer/{{weekly}}', 'myWindow', 'width=900,height=550');
+        myWin.moveTo(600, 300);
+        myWindow.focus();
+      }
+      </script>
+      {% endif %}
+
+
+<div class="adjust-doc-border-intro doc-clear">
+<center><h1 class="hero-header"><b>SUMMATION</b></h1></center>
+  <p class="teaser-content">. 
+  </p>
+  <br>
+  <div style="padding-right: 5vw;padding-left: 5vw;">
+  <center><h3 class="hero-header"><b>MONDAY</b></h3></center>
+  <p class="teaser-content">      
+      <div style="padding-right: 10vw;padding-left: 5vw;">
+      <p class="teaser-content"> 
+        <b>PREMARKET:</b> .
+      </p>
+      <ul>
+      <li class="list"><b>First Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Second Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Third Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Fourth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Fifth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Sixth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Seventh Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Eighth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Ninth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Tenth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>  
+      </ul>
+      </div>
+  </p>
+  </div>
+  <br>
+  <br>
+  <br>
+  <div style="padding-right: 5vw;padding-left: 5vw;">
+  <center><h3 class="hero-header"><b>TUESDAY</b></h3></center>
+  <p class="teaser-content">
+      <div style="padding-right: 10vw;padding-left: 5vw;">
+      <p class="teaser-content"> 
+        <b>PREMARKET:</b>
+      </p>
+      <ul>
+        <li class="list"><b>First Trade:</b>
+          <ul>
+            <li class="list"><b>Entry:</b> </li>
+            <li class="list"><b>Exit:</b> </li>
+          </ul>
+        </li>
+        <li class="list"><b>Second Trade:</b>
+          <ul>
+            <li class="list"><b>Entry:</b> </li>
+            <li class="list"><b>Exit:</b> </li>
+          </ul>
+        </li>
+        <li class="list"><b>Third Trade:</b>
+          <ul>
+            <li class="list"><b>Entry:</b> </li>
+            <li class="list"><b>Exit:</b> </li>
+          </ul>
+        </li>
+        <li class="list"><b>Fourth Trade:</b>
+          <ul>
+            <li class="list"><b>Entry:</b> </li>
+            <li class="list"><b>Exit:</b> </li>
+          </ul>
+        </li>
+        <li class="list"><b>Fifth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Sixth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Seventh Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Eighth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Ninth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Tenth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      </ul>
+      </div>
+  </p>
+  </div>
+  <br>
+  <br>
+  <br>
+  <div style="padding-right: 5vw;padding-left: 5vw;">
+  <center><h3 class="hero-header"><b>WEDNESDAY</b></h3></center>
+  <p class="teaser-content">
+      <div style="padding-right: 10vw;padding-left: 5vw;">
+      <p class="teaser-content"> 
+        <b>PREMARKET:</b> .
+      </p>
+      <ul>
+      <li class="list"><b>First Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b> </li>
+          <li class="list"><b>Exit:</b>  </li>
+        </ul>
+      </li>
+      <li class="list"><b>Second Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b> </li>
+          <li class="list"><b>Exit:</b>  </li>
+        </ul>
+      </li>
+      <li class="list"><b>Third Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b> </li>
+          <li class="list"><b>Exit:</b>  </li>
+        </ul>
+      </li>
+      <li class="list"><b>Fourth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b>  </li>
+          <li class="list"><b>Exit:</b>   </li>
+        </ul>
+      </li>
+      <li class="list"><b>Fifth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Sixth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Seventh Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Eighth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Ninth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Tenth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      </ul>
+      </div>
+  </p>
+  </div>
+  <br>
+  <br>
+  <br>
+  <div style="padding-right: 5vw;padding-left: 5vw;">
+  <center><h3 class="hero-header"><b>THURSDAY</b></h3></center>
+  <p class="teaser-content">
+      <div style="padding-right: 10vw;padding-left: 5vw;">
+      <p class="teaser-content"> 
+        <b>PREMARKET:</b> .
+      </p>
+      <ul>
+      <li class="list"><b>First Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b> </li>
+          <li class="list"><b>Exit:</b>  </li>
+        </ul>
+      </li>
+      <li class="list"><b>Second Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b> </li>
+          <li class="list"><b>Exit:</b>  </li>
+        </ul>
+      </li>
+      <li class="list"><b>Third Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b> </li>
+          <li class="list"><b>Exit:</b>  </li>
+        </ul>
+      </li>
+      <li class="list"><b>Fourth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b>  </li>
+          <li class="list"><b>Exit:</b>   </li>
+        </ul>
+      </li>
+      <li class="list"><b>Fifth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Sixth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Seventh Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Eighth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Ninth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Tenth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      </ul>
+      </div>
+  </p>
+  </div>
+  <br>
+  <br>
+  <br>
+  <div style="padding-right: 5vw;padding-left: 5vw;">
+  <center><h3 class="hero-header"><b>FRIDAY</b></h3></center>
+  <p class="teaser-content">
+      <div style="padding-right: 10vw;padding-left: 5vw;">
+      <p class="teaser-content"> 
+        <b>PREMARKET:</b> .
+      </p>
+      <ul>
+      <li class="list"><b>First Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b> </li>
+          <li class="list"><b>Exit:</b>  </li>
+        </ul>
+      </li>
+      <li class="list"><b>Second Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b> </li>
+          <li class="list"><b>Exit:</b>  </li>
+        </ul>
+      </li>
+      <li class="list"><b>Third Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b> </li>
+          <li class="list"><b>Exit:</b>  </li>
+        </ul>
+      </li>
+      <li class="list"><b>Fourth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b>  </li>
+          <li class="list"><b>Exit:</b>   </li>
+        </ul>
+      </li>
+      <li class="list"><b>Fifth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Sixth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Seventh Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Eighth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Ninth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      <li class="list"><b>Tenth Trade:</b>
+        <ul>
+          <li class="list"><b>Entry:</b></li>
+          <li class="list"><b>Exit:</b></li>
+        </ul>
+      </li>
+      </ul>
+      </div>
+  </p>
+  </div>
+<div>
+
+
+  </article>
+  <!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete Post?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

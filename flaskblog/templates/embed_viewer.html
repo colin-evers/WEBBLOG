@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+	.center{
+	width:100%;
+	height:40vw;
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%)
+	}
+</style>
+<div class="=intro-page">
+<center>
+    <h1 class="viewer" style="font-size: 14px;" >(maximize browser window, -->allow moment for viewer to load<--, click center of screen, pgdwn to cycle)</h1>
+</center>
+	<embed style="width:100%;height:40vw;"  src="/static/pdf/weekly{{ weekly }}.pdf#view=Fit&toolbar=0&navpanes=0&scrollbar=0">
+</div>
+{% endblock content %}

@@ -1,0 +1,411 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="intro-page" style="height: 82vh"> 
+  <div class="intro-inner-div">
+    <br>
+    <br>
+    <span class="welcome-caption", style="margin-top:50px;">  Trade SetUps<br></span>
+    <h1 class="hero-header", style="text-align: center;">Entry Signals for Day Trading Futures Index<hr></h1>
+
+    <div class="adjust-doc-border doc-clear">
+      <p class="paragraph"><br>The following is an insight to patterns exhibited by Market Indexes used as triggers to enter positions. Any event in and of itself is not significant. Concurrent events increase the certainty of the outcome. Although the minutiae varies setup to setup, the broader strokes are repetitious.
+      </p>
+
+      <p class="paragraph"><br>In general an 80/20 outcome is designated by four concurrent events. 70/30 by three concurrent events. 60/40 by two concurrent events. There is no correlation between the number of concurrent events used to enter a position and the duration, continuation, profitability of the trade.
+      </p>
+    </div>
+  
+    <div>
+      <h2 class="main-title doc-clear">Chart Layout</h2><hr>
+    </div>
+    <div class="adjust-doc-border">
+      <p class="paragraph">Range bar charts are used to view price behavior eliminating time from the equation. All bars are of equal size. The advantages allow one to pin point buy/sell stops ahead of completion of the current bar being painted. In addition, trends and trading ranges are easier to identify.<br>
+      </p>
+      
+      <p class="paragraph"><br><br>Each chart consists of four or more panes from top to bottom:<br>
+      </p>
+
+			<div class="doc-float-l"> <img class="doc-pic myImages hover-shadow cursor" id="myImg" src="{{url_for('static',filename='img/SetUps/layout.jpg') }}",alt="layout" >
+
+      </div>
+      <p class="paragraph"><br><b>TIME:</b>even though time is removed via range chart, the duration to complete a bar is noted. Excessive amounts are highlighted by a yellow outline of a candle drawn. 
+      <br>
+      <br>
+      <b>PRICE:</b>candlesticks are drawn.
+      <br>
+      <br>
+      <b>VOLUME:</b>is colored accordingly with distinction of an uptick/ down tick bar.
+      <br>
+      <br>
+      <b>MARKET STRENGTH:</b>Some measure of internal strength is attempted via momentum, accumulation of contracts, contract surges, divergences in market breadth peaks and valleys to price, reactions to support/resistance levels, reactions to heavy volume levels, etc. <br>
+      </p>
+    </div>
+      
+    <div>
+      <h2 class="main-title doc-clear">Trading Style<hr></h2>
+    </div>
+    <div class="adjust-doc-border">
+      <p class="paragraph">To a large extent the trading method here is to take advantage of turning points. As such, the reasons for taking a position can and are easily detracted given the behavior of the next few bars entering a position.<br><br> 
+      </p>
+
+      <p class="paragraph">In other words, within a very short time you will be proven right or wrong. The current swing being examined within the given landscape of a chart may be a pullback/ retrace within the context of the larger horizon. Or it may be in agreement with the general trend of the market as a whole. Not as much emphasis is placed on trading with market sentiment here.<br><br> 
+      </p>
+
+      <p class="paragraph">What is paramount is accessing if a push has significant legs to it. Note also if the market will trend or wedge between a trading range.<br><br>
+      </p>
+
+      <p class="paragraph">Critical is monitoring premarket and opening bell. How will the day perform? Will it move? Dead on arrival? Stuck in a trading range or trending?
+      </p>
+    </div>
+
+    <div>
+      <h2 class="main-title doc-clear">The Triggers<hr></h2>
+    </div>
+    <div class="adjust-doc-border">
+      <p class="paragraph"> Not all trigger events are created equally. That is to say, depending on which trigger event occurs simultaneously with another trigger may lend more credence to the outcome anticipated.
+      </p>
+
+      <br>
+      <div><h5 class="block-overlay">Support Resistance</h5><hr>
+      	<p class="paragraph">Support/resistance areas are painted dynamically on the charts. An area is designated as ‘potential support’ with a green hue. It is created when sellers are in control and the buyers abruptly take control. An area is designated as ‘potential resistance’ with a red hue. It is created when buyers are in control and the sellers abruptly take control.<br><br>
+        </p>
+      	<div class="doc-float-l"> 
+        	<img class="doc-pic myImages hover-shadow cursor" id="myImg" src="{{ url_for('static', filename='img/SetUps/supres.jpg') }}", alt="supres">
+      	</div>
+				<p class="paragraph"><br><br>A potential support/resistance area is validated when price behavior returns to the designated area in question and is tagged but holds.<br>
+				</p>
+				<p class="paragraph">When viewing a chart, it is always the most immediate support/resistance behavior that is of significance. This behavior may have been created one minute, one hour, one day, one week ago. But it is still the most relevant information for the specified price region. Why? Because you can still see it! It has not been erased yet. Eventually all support/resistance areas are erased over time by price action piercing through the designated areas. Once that occurs, the price action makes the chart to the left opaque and obsolete. We do not have x-ray eyes and cannot see through the other side of the mountain(price swing).
+				</p>
+        <div class="doc-clear"></div>
+      </div>
+      
+      <br>
+      <div><h5 class="block-overlay">Volume</h5><hr>
+      	<p class="paragraph">If an excessive amount of volume contributes to the formation of a range bar, a volume marker is created using a pair of dashed horizontal lines encompassing the body of the candle. As with S/R markers close attention is paid to a price area when a volume marker is tested and holds.
+      	</p>
+      	<div class="doc-float-l"> 
+      		<img class="doc-pic myImages hover-shadow cursor"id="myImg" src="{{url_for('static',filename='img/SetUps/vol1.jpg') }}",alt="vol1" >
+      	</div>
+      	<p class="paragraph"><br><br>Many times an excessive ‘stopping volume’ appears at the end of a swing.
+      	</p>
+      	<p class="paragraph"><br>Many times an excessive ‘breakout volume‘ appears at the beginning of a swing. The notion that an excessive amount of volume appears within a specific price area implies that region has significance simply due to the amount of participation in that region. Volume markers are void if price action cuts through significantly beyond designated area.</p>
+      	<div class="doc-clear"></div>
+      </div>
+
+      <br>
+      <div><h5 class="block-overlay">Divergence</h5><hr>
+        <p class="paragraph">A one to one relationship does not exist between price movement and volume. That is to say, although an excess amount of demand may cause the price to rise and an excess amount of supply may cause the price to fall, a fixed number of ‘x’ contracts cannot be expected to move price a fixed number of ‘y’ ticks.
+        </p>
+
+        <p class="paragraph"><br>
+        Hidden within any swing is an underlying torrent of buying and selling of contracts. This may hint at the underlying sentiment and strength of a move. If price rises, the volume associated with the movement is considered buying pressure. If price falls, the volume associated with the movement is considered selling pressure. A running accumulation of the net difference between these opposing forces is maintained and corresponding pivot points (HHs, LLs, HLs, LHs) of internal market strength is compared to price action. Keep in mind the notion of effort versus result.
+      	</p>
+
+        <p class="paragraph"><br>There are multiple types of divergence. Associations may be made with fading a trend, a pullback following through with a continuation of a trend, or price action stuck within a trading range.
+        </p>
+
+        <img class="doc-pic myImages hover-shadow cursor" id="myImg" src="{{url_for('static',filename='img/SetUps/div1.jpg') }}",alt="div1" >
+
+        <div class="doc-clear"></div>
+				<u><i>Scenario 1:</i></u><br>
+        <p class="paragraph">Selling pressure makes a LL of market breadth in relation to its previous pivot. Yet price creates just the opposite, a HL in relation to its previous pivot. This implies little effect with excessive selling pressure. A diagonal <font color="green">dashed green</font> line is drawn to indicate internal market strength with a <i><b>hard divergence</b></i>.<br><br>
+        </p>
+
+        <u><i>Scenario 2:</i></u><br>
+        <p class="paragraph">Lack of supply fails to make a LL of market breadth in relation to its previous pivot. Yet price creates just the opposite, a LL in relation to its previous price pivot is created. A diagonal <font color="green">dashed green</font> line is drawn to indicate potential internal market strength with a <i><b>soft divergence</b></i>. It is designated soft because the absence of supply does not guarantee that it will not show up on the next sucessive bars. In other words, supply may be coming late to the party, but it could still show up.<br><br>
+        </p>
+
+        <u><i>Scenario 3:</i></u><br>
+        <p class="paragraph">Buying pressure makes a HH of market breadth in relation to its previous pivot. Yet price creates just the opposite, a LH in relation to its previous pivot. This implies little effect with excessive buying pressure. A diagonal <font color="red">dashed red</font> line is drawn to indicate internal market weakness with a <i><b>hard divergence</b></i>.<br><br>
+        </p>
+
+        <u><i>Scenario 4:</i></u><br>
+        <p class="paragraph">Lack of demand does not make a HH of market breadth in relation to its previous pivot. Yet price creates just the opposite, a HH in relation to its previous price pivot. This implies lack of demand. A diagonal <font color="red">dashed red</font> line is drawn to indicate potential internal market weakness with <i><b>soft divergence</b></i>. It is designated soft because the absense of demand does not guarantee that it will not show up on the next sucessive bars. In other words, demand may be coming late to the party, but it could still show up.<br><br>
+        </p>
+
+        <p class="paragraph">Divergence within a trading range has more validity than when the Market trends. Indicator accuracy increases dramatically with a hard divergence overlapping a test of support/resistance area event.
+        </p>
+      </div>
+
+      <br>
+      <div><h5 class="block-overlay">Time</h5><hr>
+      	<div class="doc-float-l"> 
+					<img class="doc-pic myImages hover-shadow cursor" id="myImg" src="{{url_for('static',filename='img/SetUps/time1.jpg') }}",alt="time1" >
+				</div>
+				<p class="paragraph">Not every time through out the trading day should be looked upon with opportunity . Certainly the last hour or two are reserved for trading algos. Most portions of the day lack volatility. Typically the ideal window of opportunity lies within the first hour before NYSE opening and the subsequent hour. Although there are times when morning session is congested and lunch time breakouts occur. Nothing is cast in concrete.
+				</p>
+
+				<p class="paragraph"><br><br>With that said, given the ideal times of the trading session to trade, if a range bar takes an excessive amount of time to complete, it may be a signal that a considerable move is to follow shortly thereafter. Excessive time is highlighted by candlestick drawn with a yellow outline
+        </p>
+        <div class="doc-clear"></div>
+      </div>
+
+      <br>
+      <div><h5 class="block-overlay">Market Structure, Going with the Flow</h5><hr>
+      	<div class="doc-float-l"> 
+					<img class="doc-pic myImages hover-shadow cursor" id="myImg" src="{{url_for('static',filename='img/SetUps/price1.jpg') }}",alt="price1" >
+				</div>
+        <p class="paragraph">Given a Market that trends, price must dictate a uniform structure, either HHs and HLs for an upswing or LLs and LHs for a down swing.
+        </p>
+        <p class="paragraph"><br> <br>
+        In a strong down trend the pullback may retrace no further than the previous LL. Certainly for structure to remain intact the pullback should not exceed the previous LH.
+      	</p>
+      	<p class="paragraph"><br><br>
+        Likewise, in a strong up trend the pullback may retrace no further than the previous HH. Certainly for structure to remain intact the pullback should not exceed the previous LH. 
+      	</p>
+      	<p class="paragraph"><br><br>
+        Depending on trading style a trigger event may be considered when Market structure is clearly intact(strong trending day) and price revisits the above mentioned areas.
+        </p>
+        <div class="doc-clear"></div>
+      </div>
+          
+      <br>  
+      <div><h5 class="block-overlay">Contract Surge</h5><hr>
+      	<div class="doc-float-r"> 
+					<img class="doc-pic myImages hover-shadow cursor" id="myImg" src="{{url_for('static',filename='img/SetUps/surge1.jpg') }}",alt="surge1" >
+				</div>
+				<p class="paragraph">
+          <br>
+          <br>
+          A contract bar is caluclated as the absolute or non negative value of the difference between contracts bought versus contracts sold.
+          <br>
+          <br>
+          An order-driven matched bargain market utilizies the following terminology.
+          <br>
+          <br>
+          A trader wants to buy a security from the market. A market maker is willing to sell the security, placing an <i>"ask"</i> on the price. The <i>ask</i> is associated with the supply side of the security.  An excess of demand can raise the supply side <i>asking</i> price. There are others in line with higher prices, behind the best (lowest) price.
+          <br>
+          <br>
+          A trader wants to sell a security to the market. A market maker is willing to buy the security, placing a <i>"bid" </i> on the price. The <i>bid</i> is associated with the demand side of the security. An excess of supply can lower the demand side <i>bid</i> price. There are others in line with lower prices, behind the best (highest) price.
+          <br>
+          <br>
+          The perceived value of the security is designated at the <i>"last"</i> price which a transaction completed.
+          <br>
+          <br>
+          A green contract bar signifies a net <i>ask</i> contract quantity. A red contract bar signifies a net <i>bid</i> quantity. An up tick price bar typically has a net <i>ask</i> contract size associated with it. A down tick price bar typically has a net <i>bid</i> contract size associated with it. The opposite may occur. It is also possible for an excessive volume bar to have a net zero <i>bid and ask</i> size. How much buying (or selling) did that bar absorb as the market was off loading on it? 
+          <br>
+          <br>
+          In terms of effort versus result, any group of price bars can have a delayed effect on price action in the market.
+          <br>
+          <br>
+          Quantifying the effect of a net <i>bid</i> or <i>ask</i> size on the market may have varying results depending on the market dynamics at play. Is the market range bound? At record highs? What is the market sentiment? etc. A contract surge does not necessarily guarantee an anticipated price movement.
+        </p>
+        <div class="doc-clear"></div>
+      </div>
+
+      <br>  
+      <div><h5 class="block-overlay">Oscillator</h5><hr>
+        <div class="doc-float-l"> 
+          <img class="doc-pic myImages hover-shadow cursor" id="myImg" src="{{url_for('static',filename='img/SetUps/rsi.jpg') }}",alt="rsi" >
+        </div>
+        <p class="paragraph">
+          <br>
+          <br>RSI oscillator is setup on 40 tick chart in conjunction with a price filter. When the oscillator crosses below the overbought region in conjunction with price action crossing below the price filter,  a overbought <font color="red">red</font> trigger is displayed.
+          <br>
+          <br>When the oscilator crosses above the oversold region in conjunction with price action crossing above the price filter, a oversold <font color="green">green</font> trigger is displayed.
+        </p>
+        <div class="doc-clear"></div>
+      </div>
+
+      <br>
+      <div><h5 class="block-overlay">Momentum</h5><hr>
+        <div class="doc-float-l"> 
+          <img class="doc-pic myImages hover-shadow cursor" style="width:450px;height:100px;" id="myImg" src="{{url_for('static',filename='img/SetUps/mom1.jpg') }}",alt="rsi" >
+        </div>
+        <p class="paragraph">
+          <br>The Average Directional Index when properly tuned to the security of interest can be very receptive to price movements. It is multiplied here by the spread between a fast and slow ema. This tweaks sensitivity and forces the indicator to have the same direction as the trend in question. It is used here as a boundary threshold for momentum.
+        </p>
+        <div class="doc-clear"></div>
+        <br>
+        <div class="doc-float-l"> 
+          <img class="doc-pic myImages hover-shadow cursor" style="width:450px;height:100px;" id="myImg" src="{{url_for('static',filename='img/SetUps/mom2.jpg') }}",alt="rsi" >
+        </div>  
+        <p class="paragraph">
+          <br>Moving Average Convergence Divergence may also be used as a boundary threshold for momentum.
+        </p>
+        <div class="doc-clear"></div>
+      </div>
+  
+
+      <br>
+      <div><h5 class="block-overlay" >Price BreakOut</h5><hr>
+        <p class="paragraph">Break outs are simply trading with the current swing. This should be preceded with an excess in volume and or contracts and validated by price structure(HHs and HLs, LLs and LHs).
+        </p>
+        <div>
+          <span><i>BreakOut Sequence example ......</i></span>
+          <div class="row">
+            <div class="column">
+              <img src="{{ url_for('static', filename='img/SetUps/bo1.jpg') }}", style="width:100%" onclick="openModal();currentSlide(1)" class="hover-shadow cursor" id="myImg">
+            </div>
+            <div class="column">
+              <img src="{{ url_for('static', filename='img/SetUps/bo2.jpg') }}", style="width:100%" onclick="openModal();currentSlide(2)" class="hover-shadow cursor" id="myImg">
+            </div>
+            <div class="column">
+              <img src="{{ url_for('static', filename='img/SetUps/bo3.jpg') }}", style="width:100%" onclick="openModal();currentSlide(3)" class="hover-shadow cursor" id="myImg">
+            </div>
+            <div class="column">
+              <img src="{{ url_for('static', filename='img/SetUps/bo4.jpg') }}", style="width:100%" onclick="openModal();currentSlide(4)" class="hover-shadow cursor" id="myImg">
+            </div>
+            <div class="column">
+              <img src="{{ url_for('static', filename='img/SetUps/bo5.jpg') }}", style="width:100%" onclick="openModal();currentSlide(4)" class="hover-shadow cursor" id="myImg">
+            </div>
+          </div>
+          <div id="myModal2" class="modal">
+            <span class="close cursor" onclick="closeModal()">&times;</span>
+            <div class="modal-content">
+              <div class="mySlides">
+                <div class="numbertext">1 /5</div>
+                <img src="{{ url_for('static', filename='img/SetUps/bo1.jpg') }}" style="width:100%">
+              </div>
+              <div class="mySlides">
+                <div class="numbertext">2 / 5</div>
+                <img src="{{ url_for('static', filename='img/SetUps/bo2.jpg') }}" style="width:100%">
+              </div>
+              <div class="mySlides">
+                <div class="numbertext">3 / 5</div>
+                <img src="{{ url_for('static', filename='img/SetUps/bo3.jpg') }}" style="width:100%">
+              </div>
+              <div class="mySlides">
+                <div class="numbertext">4 / 5</div>
+                <img src="{{ url_for('static', filename='img/SetUps/bo4.jpg') }}" style="width:100%">
+              </div>
+              <div class="mySlides">
+                <div class="numbertext">5 / 5</div>
+                <img src="{{ url_for('static', filename='img/SetUps/bo5.jpg') }}" style="width:100%">
+              </div>    
+              <a class="prev" style="color:white;" onclick="plusSlides(-1)">&#10094;</a>
+              <a class="next" style="color:white;" onclick="plusSlides(1)">&#10095;</a>
+              <div class="caption-container">
+                <p id="caption"></p>
+              </div>
+              <div class="column">
+                <img class="demo cursor" src="{{ url_for('static', filename='img/SetUps/bo1.jpg') }}" style="width:100%" onclick="currentSlide(1)" alt="breakout 1">
+              </div>
+              <div class="column">
+                <img class="demo cursor" src="{{ url_for('static', filename='img/SetUps/bo2.jpg') }}" style="width:100%" onclick="currentSlide(2)" alt="breakout 2">
+              </div>
+              <div class="column">
+                <img class="demo cursor" src="{{ url_for('static', filename='img/SetUps/bo3.jpg') }}" style="width:100%" onclick="currentSlide(3)" alt="breakout 3">
+              </div>
+              <div class="column">
+                <img class="demo cursor" src="{{ url_for('static', filename='img/SetUps/bo4.jpg') }}" style="width:100%" onclick="currentSlide(4)" alt="breakout 4">
+              </div>
+              <div class="column">
+                <img class="demo cursor" src="{{ url_for('static', filename='img/SetUps/bo5.jpg') }}" style="width:100%" onclick="currentSlide(5)" alt="breakout 5">
+              </div>
+            </div>          
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="main-title doc-clear">Entering a Position<hr></h2>
+    </div>
+    <div class="adjust-doc-border">	
+			<p class="paragraph">Two simultaneous trigger events <b>Support Resistance confirmation, Volume level reactions, Divergence, Time, Going with the Flow, Contract Surge, Price BreakOut</b> may be sufficient for a 60/40 trade.<br><br>
+			</p>
+
+			<div class="doc-float-r"> 
+				<img class="doc-pic myImages hover-shadow cursor" id="myImg" src="{{url_for('static',filename='img/SetUps/80_20.jpg') }}",alt="80_20" >
+			</div>
+			<p class="paragraph"><br><br>The following figure depicts an 80/20 trade which occured with the Market trending. 
+			</p>
+			<div class="doc-clear"></div>
+
+			<div class="doc-float-l"> 
+				<img class="doc-pic myImages hover-shadow cursor" id="myImg" src="{{ url_for('static', filename='img/SetUps/fade.jpg') }}", alt="fade">
+			</div>
+			<p class="paragraph"><br><br>The following depicts an entry to fade the trend given two events(mid range charts,eg.10ticks, do not carry as much weight).
+			</p>
+			<div class="doc-clear"></div>
+
+			<div class="doc-float-r"> 
+				<img class="doc-pic myImages hover-shadow cursor" id="myImg" src="{{ url_for('static', filename='img/SetUps/pullback.jpg') }}", alt="pullback">
+			</div>
+			<p class="paragraph"><br><br>
+			The following depicts a 70/30 trade, re entring on a pullback as the trend continues.</p>
+			<div class="doc-clear"></div>
+
+			<div class="doc-float-l"> 
+				<img class="doc-pic myImages hover-shadow cursor" id="myImg" src="{{ url_for('static', filename='img/SetUps/pullback2.jpg') }}", alt="pullback2">
+			</div>
+			<p class="paragraph"><br><br>
+			Another  70/30 trade, pullback in a treading range.</p>
+			<div class="doc-clear"></div>
+
+      <div class="doc-float-r"> 
+        <img class="doc-pic myImages hover-shadow cursor" id="myImg" src="{{ url_for('static', filename='img/SetUps/bo_entry.jpg') }}", alt="bo_entry">
+      </div>
+      <p class="paragraph"><br><br>
+      Breakout entry setup.</p>
+      <div class="doc-clear"></div>
+    </div>
+
+		<div>
+			<h2 class="main-title doc-clear">Abrogating a Position<hr></h2>
+		</div>
+		<div class="adjust-doc-border">
+      <p class="paragraph">
+      	Any position should be closed if:
+      </p>
+
+        <ul>
+          <li class="list">the reasons to enter the trade no longer exist</li>
+          <li class="list">the momentum behind the swing has waned</li>
+          <li class="list">the Market failed to move within a reasonable time the position was taken.</li>
+          <li class="list">The Target is too extended given the current conditions of Market behavior.</li>
+        </ul>
+      
+      <p class="paragraph"><br>All support/resistance lines are void once price cuts through them.
+      </p>
+
+      <p class="paragraph"><br>All volume markers are void once equal wild price swings occur on both sides (above and below) them. Any Divergence line is given only two chances to succeed. The first chance is on the completion of the bar that generated the event. The second chance is on the third bar from the event.
+      </p>
+       
+      <p class="paragraph"><br>Any volume marker that is immediately followed by the next adjacent bar which has at least half or more volume than that of marker and in the opposite direction, may void the marker.
+      </p>
+    </div>
+
+		<div>
+			<h2 class="main-title doc-clear">Discretionary Trading<hr></h2>
+		</div>
+		<div class="adjust-doc-border">
+      <p class="paragraph">
+      	<b><i>“If Markets were purely regimented, everyone would be a millionaire. Trading acumen requires intellect and intuition.”</i></b>
+      	<br>
+      	<br>
+      	Not all trigger events are as concrete or well defined as one might yearn for. Not all days in the Markets exhibit the same underlying behavior. Watching any Market over an extended period of time one notices an ebb and flow with periods of expansion and contraction, volatility, Market participation, varying degrees of retrace, ease of movement. In addition Markets may be seasonal, rollover, triple witching expirations, Holidays, key economic announcements, etc.
+      	<br>
+      	<br>
+      	There are times when watching the Market unfold for a particular trading day that mechanical setups almost develop and mature, but never do.
+      	<br>
+      	<br>
+      	There are times when watching the Market unfold for a particular trading day that no mechanical indicators come alive. 
+      	<br>
+      	<br>
+      	A more advanced, experienced trader may still find opportunities carefully weighing any risks involved.
+      </p>
+      <p class="paragraph">
+        It is easy to be fooled with the “would of, could have, should haves”. Hindsight is always 20/20. It is quite another thing to do it in the spur of the moment, heat of the battle. It takes many hours of review to be familiar with repetitive patterns. Note that any index may also exhibit idiosyncrasies unique only to its own Market.</p>
+        <p class="paragraph"><br><br>
+        Although not illustrated here, other considerations in discretionary trading may also include:
+      	</p>
+        <ul>
+          <li class="list">Reversing a position. There are times when all the reasons to enter the trade initially, has fallen apart. If the position taken was counter to the Market direction, all may be for naught. The position may have been a weak trade to begin with. Or the current bar formation may be part of a larger "make-or-break" scenario. Under such circumstances a choice is made not only to close out the current position and reverse, but possibly add to the reverse position itself.
+          <li class="list"> Trading off of mid range charts. The 'indicator set' triggers off of the Mid Range Chart but fails to mature in the Trading Range Chart(10tick). Under such scenarios trade using Mid Range Chart,but only in sync with direction of the current swing.
+          <li class="list"> Marking swing reversals with the relative juxtaposition of the most recent LH/HL pair.
+          <li class="list"> Demarcation of underlying strength of a breakout by observing bar to bar overlap and volume associated. Entries are usually late under such circumstances.
+          <li class="list"> Using markers on the next higher range chart within the context of the current range chart
+          (eg. 20tick volume marker used as a support/resistance line within the context of the10tick chart).
+          <li class="list"> Retest of Orange / Lime Line Markers. Areas denote a flip flop of points of control(i.e. buyers or sellers). 
+        </ul>
+      </p>
+    </div>
+
+    <br>
+    <br>
+    <br>
+  </div>
+</div>
+{% endblock content %}  

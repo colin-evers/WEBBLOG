@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block content %}
+
+
+<style>
+#myVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%; 
+  min-height: 100%;
+}
+
+.
+</style>
+<body>
+
+<video autoplay muted loop id="myVideo">
+  <source src="/static/videoplayback2.mp4" type="video/mp4">
+  Your browser does not support HTML5 video.
+</video>
+
+<div class="intro-page" style="max-height: 77vh;overflow:auto;font-size:14px;line-height:21px;"> 
+  <div class="intro-inner-div" style="color:white;">
+  	<div class="container-fluid col-md-10">
+  		<h1>Disclosure</h1>
+  		<p>
+  			Trading security futures involves the risk of loss, including the possibility of loss greater than your initial investment. Prior to buying or selling a security future, a person must receive a copy of the Risk Disclosure Statement for Security Futures Contracts.
+				<br>
+				<br>WebSite Disclaimer: Use at your own risk. While we endeavour to keep the information up to date and correct, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability or availability with respect to the website or the information, services related graphics contained on the website for any purpose. Any reliance you place on such information is therefore strictly at your own risk. In no event will we be liable for any loss or damage, including, without limitation, indirect or consequential loss or damage, or any loss or damage whatsoever arising from loss of data or profits arising out of, or in connection with, the use of this website. This presentation is for educational purposes only. Opinions or points of view expressed in this presentation represent the view of the presenter only. Nothing in this presentation constitutes legal, technical, financial advice. The individuals appearing in this presentation, if any, are depicted for illustrative purpose only.
+				<br>
+				<br>Copyright Disclaimer: Under section 107 of the Copyright Act of 1976, allowance is made for “fair use” for purposes such as criticism, comment, news reporting, teaching, scholarship, education and research. Fair use is a use permitted by copyright statute that might otherwise be infringing. Educational or personal use tips the balance in favor of fair use.
+				<br>
+        <br>
+			</p>
+		</div>
+	</div>
+</div>
+</body>
+
+
+{% endblock content %}  

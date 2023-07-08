@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<style>
+	.center{
+	width:100%;
+	height:51vw;
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%)
+	}
+
+  
+  .blink {
+    animation: blinker 12.0s ease-out infinite;
+    color: white;
+    font-size: 14px;
+    background-color:#000000;
+  }
+  @keyframes blinker {  
+    100% { opacity: 0; }
+  }
+
+
+</style>
+  <div class="grid"> 
+    <head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+
+      <!-- site font -->
+      <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
+
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+      <!-- local CSS-->
+      
+      <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login.css') }}"> -->
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='study.css') }}">
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
+    </head>
+    <body>
+    <backdrop>
+			<center>
+    			<p class="blink" ><br>--->allow a moment for data to load, maximize window, click center of screen to set focus, pgdwn for data<---<br><br></p>
+			</center>
+			<embed class="center" src="/static/pdf/weekly{{ weekly }}.pdf#view=Fit&toolbar=0&navpanes=0&scrollbar=0">
+		</backdrop>
+		</body>
+	</div>
+</html>
+	
+

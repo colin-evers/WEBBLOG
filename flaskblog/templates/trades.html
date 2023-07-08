@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="intro-page" style="height:82vh;">
+  <br><h1 class="hero-header adjust-doc-boarder", style="text-align: center;">trades executed daily</h1><hr><br>
+  <div class="intro-inner-div" style="height:60vh;">
+    {% for post in posts.items %}
+      <div class="adjust-doc-border" style="border:1px solid black;background-image: linear-gradient(-45deg, #9ba6b1, white);">
+        <a style="color:black" href="{{ url_for('posts.post', post_id=post.id) }}"><h3 class="teaser-title" style="background-color:transparent"> {{ post.teaser_title }}</a><span class="teaser-details">{{ post.teaser_details }}</span></h3>
+        <img class= "teaser-pic doc-float-l" src="{{ post.teaser_img }}">
+        <p class="teaser-content" style="font-size: 16px;"><br>{{ post.teaser_caption }}</p>
+        <div class="doc-clear"></div>
+      </div>
+      <br>
+    {% endfor %}
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if posts.page == page_num %}
+          <a class="btn btn-primary btn-lg mb-8" href="{{ url_for('main.trades', page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-primary btn-lg mb-8" href="{{ url_for('main.trades', page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}
