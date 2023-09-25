@@ -6,6 +6,24 @@ col
 	mso-ruby-visibility:none;}
 br
 	{mso-data-placement:same-cell;}
+.font2
+	{color:#000000;
+	font-size:9.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Comic Sans MS";
+	mso-generic-font-family:auto;
+	mso-font-charset:134;}
+.font3
+	{color:#000000;
+	font-size:9.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Comic Sans MS";
+	mso-generic-font-family:auto;
+	mso-font-charset:134;}
 .style0
 	{mso-number-format:"General";
 	text-align:general;
@@ -690,15 +708,27 @@ td
 	border:.5pt solid windowtext;}
 .xl78
 	{mso-style-parent:style0;
+	mso-number-format:"0";
+	text-align:left;
+	vertical-align:top;
+	mso-pattern:auto none;
+	background:#D9D9D9;
+	font-size:9.0pt;
+	font-weight:700;
+	font-family:Comic Sans MS;
+	mso-font-charset:134;
+	border:.5pt solid windowtext;}
+.xl79
+	{mso-style-parent:style0;
 	text-align:center;
 	mso-font-charset:134;
 	border-left:.5pt solid windowtext;
 	border-top:.5pt solid windowtext;}
-.xl82
+.xl83
 	{mso-style-parent:style0;
 	text-align:center;
 	mso-font-charset:134;}
-.xl83
+.xl84
 	{mso-style-parent:style0;
 	text-align:center;
 	mso-pattern:auto none;
@@ -709,7 +739,7 @@ td
 	border-left:.5pt solid windowtext;
 	border-top:.5pt solid windowtext;
 	border-bottom:.5pt solid windowtext;}
-.xl84
+.xl85
 	{mso-style-parent:style0;
 	mso-number-format:"0\.00_\)\;\[Red\]\\\(0\.00\\\)";
 	text-align:center;
@@ -721,17 +751,7 @@ td
 	border-top:.5pt solid windowtext;
 	border-right:.5pt solid windowtext;
 	border-bottom:.5pt solid windowtext;}
-.xl87
-	{mso-style-parent:style0;
-	text-align:center;
-	mso-font-charset:134;}
 .xl88
 	{mso-style-parent:style0;
-	mso-number-format:"0";
-	text-align:center;
-	mso-font-charset:134;}
-.xl89
-	{mso-style-parent:style0;
-	mso-number-format:"0\.00_\)\;\[Red\]\\\(0\.00\\\)";
 	text-align:center;
 	mso-font-charset:134;}
