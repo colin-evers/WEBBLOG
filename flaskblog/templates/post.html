@@ -21,12 +21,19 @@
       <br>
       <script>
         function myDetach() {
-        var myWin = window.open( '/detach_viewer/{{weekly}}', 'myWindow', 'width=990,height=680');
-        myWin.moveTo(600, 300);
-        //maximize window
-        //myWin.resizeTo(window.screen.availWidth, window.screen.availHeight);
-        myWin.focus();
-      }
+            // Open at 95% of screen so the PDF loads at the right size immediately
+            var w = Math.floor(window.screen.availWidth * 0.50);
+            var h = Math.floor(window.screen.availHeight * 0.50);
+            var left = Math.floor((window.screen.availWidth - w) / 2);
+            var top = Math.floor((window.screen.availHeight - h) / 2);
+        
+            var myWin = window.open(
+                '/detach_viewer/{{weekly}}', 
+                'myWindow', 
+                'width=' + w + ',height=' + h + ',left=' + left + ',top=' + top + ',resizable=yes,scrollbars=yes'
+            );
+            myWin.focus();
+        }
       </script>
       {% endif %}
       <!--<div class="adjust-doc-border-intro doc-clear" style="overflow:auto;flex:auto;"> -->

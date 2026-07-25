@@ -1,57 +1,247 @@
 <!DOCTYPE html>
-<html>
-<style>
-	.center{
-	width:100%;
-	height:51vw;
-	margin: 0;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%)
-	}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+    <title>{{ title }}</title>
+    <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='study.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
 
-  
-  .blink {
-    animation: blinker 12.0s ease-out infinite;
-    color: white;
-    font-size: 14px;
-    background-color:#000000;
-  }
-  @keyframes blinker {  
-    100% { opacity: 0; }
-  }
+        .viewer-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+        }
 
+        .pdf-wrapper {
+            flex: 1 1 auto;
+            min-height: 0;
+            width: 100%;
+            position: relative;
+            background-color: #000;
+        }
 
-</style>
-  <div class="grid"> 
-    <head>
-      <!-- Required meta tags -->
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+        .pdf-wrapper embed {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
 
-      <!-- site font -->
-      <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
+        /* ===== LOADING OVERLAY ===== */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+            z-index: 100;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
 
-      <!-- Bootstrap CSS -->
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-      <!-- local CSS-->
-      
-      <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login.css') }}"> -->
-      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='study.css') }}">
-      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
-    </head>
-    <body>
-    <backdrop>
-			<center>
-    			<p class="blink" ><br>--->allow a moment for data to load, maximize window, click center of screen to set focus, pgdwn for data<---<br><br></p>
-			</center>
-			<embed class="center" src="/static/pdf/weekly{{ weekly }}.pdf#view=Fit&toolbar=0&navpanes=0&scrollbar=0">
-		</backdrop>
-		</body>
-	</div>
+        /* Spinning circle */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #333;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #aaa;
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+            margin-bottom: 10px;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            width: 200px;
+            height: 6px;
+            background-color: #333;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background-color: #3498db;
+            border-radius: 3px;
+            transition: width 0.2s ease;
+        }
+
+        .progress-text {
+            color: #666;
+            font-size: 11px;
+            font-family: Arial, sans-serif;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="viewer-container">
+        <div class="pdf-wrapper" id="pdfWrapper">
+            <!-- Loading overlay -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading PDF...</div>
+                <div class="progress-container">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+
+            <embed 
+                id="pdfEmbed"
+                type="application/pdf"
+                title="Weekly Trading PDF">
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var wrapper = document.getElementById('pdfWrapper');
+            var embed = document.getElementById('pdfEmbed');
+            var overlay = document.getElementById('loadingOverlay');
+            var progressFill = document.getElementById('progressFill');
+            var progressText = document.getElementById('progressText');
+            var baseUrl = "/static/pdf/weekly{{ weekly }}.pdf";
+            var resizeTimer;
+            var lastW = window.innerWidth;
+            var lastH = window.innerHeight;
+            
+            function getPdfUrl() {
+                var isEdge = navigator.userAgent.indexOf('Edg') > -1;
+                var viewParam = isEdge ? 'FitV' : 'Fit';
+                return baseUrl + "#view=" + viewParam + "&toolbar=0&navpanes=0&scrollbar=0";
+            }
+            
+            function hideLoader() {
+                overlay.classList.add('hidden');
+            }
+            
+            function showLoader() {
+                overlay.classList.remove('hidden');
+                progressFill.style.width = '0%';
+                progressText.textContent = '0%';
+            }
+            
+            function updateProgress(percent) {
+                progressFill.style.width = percent + '%';
+                progressText.textContent = Math.round(percent) + '%';
+            }
+            
+            function loadPdf() {
+                var pdfUrl = getPdfUrl();
+                var xhr = new XMLHttpRequest();
+                
+                xhr.open('GET', pdfUrl, true);
+                xhr.responseType = 'blob';
+                
+                // Track download progress - fires as bytes arrive
+                xhr.onprogress = function(event) {
+                    if (event.lengthComputable) {
+                        var percent = (event.loaded / event.total) * 100;
+                        updateProgress(percent);
+                    } else {
+                        progressText.textContent = 'Downloading...';
+                    }
+                };
+                
+                // Fires when download is COMPLETE
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        updateProgress(100);
+                        progressText.textContent = 'Rendering...';
+                        
+                        // Set embed src (preserves all URL parameters)
+                        embed.src = pdfUrl;
+                        
+                        // Wait for PDF viewer to render, then fade out
+                        setTimeout(hideLoader, 3500);
+                    } else {
+                        embed.src = pdfUrl;
+                        setTimeout(hideLoader, 2000);
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    embed.src = pdfUrl;
+                    setTimeout(hideLoader, 2000);
+                };
+                
+                xhr.send();
+            }
+            
+            // Initial load
+            loadPdf();
+            
+            // Handle window resize (maximize/restore)
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    var dw = Math.abs(window.innerWidth - lastW);
+                    var dh = Math.abs(window.innerHeight - lastH);
+                    
+                    if (dw > 50 || dh > 50) {
+                        lastW = window.innerWidth;
+                        lastH = window.innerHeight;
+                        
+                        showLoader();
+                        
+                        var oldEmbed = embed;
+                        var newEmbed = document.createElement('embed');
+                        newEmbed.id = 'pdfEmbed';
+                        newEmbed.type = 'application/pdf';
+                        newEmbed.title = 'Weekly Trading PDF';
+                        newEmbed.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;border:none;';
+                        
+                        wrapper.appendChild(newEmbed);
+                        wrapper.removeChild(oldEmbed);
+                        embed = newEmbed;
+                        
+                        setTimeout(loadPdf, 100);
+                    }
+                }, 300);
+            });
+        })();
+    </script>
+</body>
 </html>
-	
-
