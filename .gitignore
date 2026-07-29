@@ -1,6 +1,8 @@
 *.bak
 *.pyc
 .vscode
+.agents
+ARCHITECTURE.md
 #flaskblog/static/pdf/
 #flaskblog/static/pdf/*.001
 #flaskblog/static/pdf/*.002
