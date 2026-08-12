@@ -3,6 +3,7 @@
 .vscode
 .agents
 ARCHITECTURE.md
+pyrefly.toml
 #flaskblog/static/pdf/
 #flaskblog/static/pdf/*.001
 #flaskblog/static/pdf/*.002
