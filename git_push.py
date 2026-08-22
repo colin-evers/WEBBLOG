@@ -7,44 +7,64 @@ A step-by-step graphical automation tool for inspecting, synchronizing,
 staging, committing, pushing, and verifying Git repository changes with
 integrated error handling, rollback safety, and a standardized GUI.
 
-Workflow Overview (5 Steps):
+Detailed Workflow Overview (5 Steps):
 -------------------------------------------------------------------------------
 1. Step 1 of 5: Initial Repository Pre-Check (Fetch & Status)
    - Executes: `git fetch` (synchronizes remote branch state) followed by `git status`.
-   - Discrepancy Detection:
-     * If local is UP-TO-DATE & CLEAN (nothing to commit): Displays ONLY the [ Exit ] button.
-     * If local has MODIFICATIONS to commit: Displays standard [ Next ] and [ Cancel / Exit ] buttons.
-     * If local is BEHIND remote: Displays warning badge and presents two explicit choices:
-        - [ Pull & Proceed ] (Green): Safely stashes all tracked & untracked files (`git stash push -u`),
-          rebases remote commits (`git pull --rebase`), and restores local edits (`git stash pop`).
-          If no local changes exist after pulling, shows a synchronized confirmation with ONLY an [ Exit ] button.
-          If uncommitted local changes exist, seamlessly proceeds to Step 2.
-        - [ Exit ]: Closes the application immediately without altering the repository.
+   - Dynamic Branch & Cleanliness Handling:
+     * Scenario A: Repository is Up-to-Date and Clean (Nothing to commit):
+       - Displays: Status badge "UP TO DATE & CLEAN".
+       - Buttons: Removes the [ Next ] button entirely; displays ONLY [ Exit ].
+       - Pressing <Return> or clicking [ Exit ] finishes and exits immediately.
+     * Scenario B: Repository is Up-to-Date with Local Modifications:
+       - Displays: Standard [ Next ] and [ Cancel / Exit ] buttons to proceed to Step 2.
+     * Scenario C: Local Branch is Behind Remote Repository:
+       - Displays: Warning badge "BEHIND REMOTE (Upstream changes detected)".
+       - Action Buttons:
+         - [ Pull & Proceed ] (Green):
+           1. Runs `git stash push -u -m "autostash_git_push"` to safely stash all
+              tracked AND untracked files so no collisions occur.
+           2. Runs `git pull --rebase origin <branch>` to cleanly apply remote commits.
+           3. Runs `git stash pop` to restore all local modifications & untracked files.
+           4. Post-Pull Check:
+              - If no local changes exist after pulling: Displays a synchronized
+                confirmation window with ONLY an [ Exit ] button.
+              - If uncommitted local changes exist: Seamlessly proceeds to Step 2.
+         - [ Exit ]: Closes the application immediately without altering the repository.
+     * Untracked File Conflict Notification:
+       - If untracked files would be overwritten, displays an explicit Git Safety Rule notice:
+         "• Git will never touch, modify, or insert conflict markers into an untracked file.
+          • Because local files exist untracked that also exist on the remote repository,
+            Git has aborted the pull to protect your uncommitted work from being overwritten."
 
 2. Step 2 of 5: Staging All Changes
    - Executes: `git add -A` (stages all modified, deleted, and untracked files).
-   - Safe Cancellation: Executes `git restore --staged .` to unstage all files,
-     delays 1.0 second with on-screen confirmation, and exits cleanly.
+   - Safe Cancellation:
+     - Executes `git restore --staged .` to unstage all files back to the working directory.
+     - Displays confirmation on screen, delays 1.0 second, and exits cleanly.
 
 3. Step 3 of 5: Commit Message Entry & Commit
-   - Prompts the user with a focused 680x480 text input dialog.
-   - Highlights the prominent green [ Next ] button (activated via click or Enter key).
+   - Input Dialog: Standardized 680x480 modal query dialog with multi-line comment entry.
+   - Highlights the prominent green [ Next ] button (#2E7D32) (activated via click or Enter).
    - Executes: `git commit -m "<COMMENT>"`.
-   - Safe Cancellation: Executes `git reset --soft HEAD~1` followed by
-     `git restore --staged .` to undo the commit and unstaging while keeping
-     all local source file edits 100% intact in the working directory.
+   - Safe Cancellation:
+     - Executes `git reset --soft HEAD~1` (undoes commit) followed by `git restore --staged .`
+       (unstages files) so that ALL local source code modifications remain 100% intact.
+     - Displays rollback progress, delays 1.0 second, and exits cleanly.
 
 4. Step 4 of 5: Updating Remote Repository (Push)
    - Executes: `git push origin -u <branch>`.
-   - Safe Cancellation: Executes `git reset --soft HEAD~1`, `git restore --staged .`,
-     and `git push --force-with-lease origin <branch>` to roll back the remote GitHub
-     repository by 1 commit while preserving all local modifications intact.
+   - Safe Cancellation:
+     - Executes `git reset --soft HEAD~1`, `git restore --staged .`, and
+       `git push --force-with-lease origin <branch>` to roll back the remote GitHub
+       repository by 1 commit while preserving all local modifications intact.
+     - Displays rollback progress, delays 1.0 second, and exits cleanly.
 
 5. Step 5 of 5: Final Post-Update Status
    - Executes: `git status` to verify the repository is clean and fully synchronized.
    - Action Buttons:
      * [ Exit ]: Completes workflow and closes the application cleanly.
-     * [ Cancel ]: Rolls back remote repository (`git push --force-with-lease`)
+     * [ Cancel ]: Rolls back remote repository (`git push --force-with-lease origin <branch>`)
        and undoes local commit/staging (`git reset --soft HEAD~1` + `git restore --staged .`),
        leaving all working directory file edits intact.
 
@@ -118,7 +138,7 @@ class GitStepDialog:
     - Guaranteed 680x480 dimensions centered on screen.
     - Pinned bottom button bar with [ Next ] / [ Exit ] and [ Cancel ] buttons.
     - Scrollable monospace output console displaying real-time command feedback.
-    - Status badge showing execution state (Running, Success, Error).
+    - Status badge showing execution state (Running, Success, Error, Behind).
     - Keyboard navigation (<Return>, <KP_Enter>, <Space>).
     """
 
