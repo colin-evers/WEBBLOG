@@ -845,6 +845,7 @@ def main():
     # STEP 5 of 5: Final Post-Update Status (git status)
     # -------------------------------------------------------------------------
     step5_cmd = "git status"
+    step55_cmd = "git status"
 
     def step5_cancel_handler(dialog):
         """Rolls back remote repository and local commit/staging while preserving working directory edits"""
