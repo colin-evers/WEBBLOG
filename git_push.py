@@ -792,7 +792,7 @@ def main():
         dialog.txt_output.insert(tk.END, "1. Executing: git reset --soft HEAD~1\n")
         dialog.txt_output.see(tk.END)
         dialog.top.update()
-        step55_cmd = "git status"
+        step66_cmd = "git status"
 
         # 1. git reset --soft HEAD~1
         c1, out1, err1 = run_git_command("git reset --soft HEAD~1", cwd=repo_dir)
