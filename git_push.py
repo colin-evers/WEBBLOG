@@ -14,8 +14,8 @@ Workflow Overview (5 Steps):
    - Discrepancy Detection:
      * If local is UP-TO-DATE: Displays standard [ Next ] and [ Cancel / Exit ] buttons.
      * If local is BEHIND remote: Displays warning badge and presents two explicit choices:
-       - [ Pull & Proceed ] (Green): Runs `git pull --rebase --autostash origin <branch>`
-         to safely integrate remote commits while preserving uncommitted local edits,
+       - [ Pull & Proceed ] (Green): Safely stashes all tracked & untracked files (`git stash push -u`),
+         rebases remote commits (`git pull --rebase`), and restores local edits (`git stash pop`),
          then continues directly to Step 2.
        - [ Exit ]: Closes the application immediately without altering the repository.
 
@@ -508,10 +508,9 @@ def main():
             "======================================================================\n"
             "HOW YOUR LOCAL CHANGES ARE PROTECTED AGAINST LOSS:\n"
             f"• If you click [ Pull & Proceed ], the script executes:\n"
-            f"    git pull --rebase --autostash origin {branch}\n"
-            "  1. '--autostash' automatically saves any uncommitted local work into a temporary stash.\n"
-            "  2. '--rebase' pulls and applies the new remote commits cleanly beneath your work.\n"
-            "  3. '--autostash' automatically restores all your uncommitted file edits on top.\n"
+            f"    1. 'git stash push -u' to safely stash all modified AND untracked files.\n"
+            f"    2. 'git pull --rebase origin {branch}' to cleanly bring in remote commits.\n"
+            f"    3. 'git stash pop' to restore all your uncommitted local edits on top.\n"
             "  ==> RESULT: Your local source code modifications are 100% preserved and safe.\n"
             "• If you click [ Exit ], the application closes and leaves the repository untouched.\n"
             "======================================================================"
@@ -549,16 +548,54 @@ def main():
     if not dlg1.result_proceed:
         sys.exit(0)
 
-    # If the repository was behind and user clicked 'Pull & Proceed', pull latest changes
+    # If the repository was behind and user clicked 'Pull & Proceed', pull latest changes safely
     if is_behind:
-        pull_cmd = f"git pull --rebase --autostash origin {branch}"
+        # Check if there are local uncommitted or untracked changes
+        has_local_changes = bool(out1_status.strip() and "nothing to commit, working tree clean" not in out1_status.lower())
+        did_stash = False
+
+        # Stash all modified AND untracked files (using -u) so incoming remote files don't collide
+        if has_local_changes:
+            c_stash, out_stash, err_stash = run_git_command('git stash push -u -m "autostash_git_push"', cwd=repo_dir)
+            if c_stash == 0 and "No local changes to save" not in out_stash:
+                did_stash = True
+
+        # Pull and rebase cleanly
+        pull_cmd = f"git pull --rebase origin {branch}"
         code_pull, out_pull, err_pull = run_git_command(pull_cmd, cwd=repo_dir)
+
+        # Restore local stashed modifications and untracked files
+        if did_stash:
+            c_pop, out_pop, err_pop = run_git_command("git stash pop", cwd=repo_dir)
+            if c_pop != 0:
+                messagebox.showwarning(
+                    "Merge Conflict Markers Placed",
+                    f"Remote changes were pulled, and Git has placed standard conflict markers (<<<<<<< / >>>>>>>) inside the conflicting file(s):\n\n"
+                    f"{out_pop}\n{err_pop}\n\n"
+                    "Please open the file(s) in your code editor, resolve the conflict markers, and re-run git_push.py.",
+                    parent=root
+                )
+                sys.exit(1)
+
         if code_pull != 0:
-            messagebox.showerror(
-                "Pull Conflict / Error",
-                f"Failed to pull and rebase upstream changes automatically:\n\n{out_pull}\n{err_pull}\n\nPlease resolve conflicts manually.",
-                parent=root
-            )
+            combined_err = f"{out_pull}\n{err_pull}".strip()
+            if "untracked working tree files would be overwritten" in combined_err.lower():
+                msg = (
+                    "Git Safety Rule Notice:\n\n"
+                    "• Git will never touch, modify, or insert conflict markers into an untracked file.\n"
+                    "• Because local files exist untracked that also exist on the remote repository, Git has aborted the pull to protect your uncommitted work from being overwritten.\n\n"
+                    "How to resolve this manually:\n"
+                    "1. Move or rename your local untracked file(s) temporarily, OR\n"
+                    "2. Stage the file with 'git add <file>', then pull to let Git perform a 3-way diff and insert conflict markers.\n\n"
+                    f"Git Output:\n{combined_err}"
+                )
+                messagebox.showerror("Git Untracked File Safety Notice", msg, parent=root)
+            else:
+                messagebox.showerror(
+                    "Pull Conflict / Error",
+                    f"Failed to pull and rebase upstream changes automatically:\n\n{out_pull}\n{err_pull}\n\nPlease resolve conflicts manually.",
+                    parent=root
+                )
             sys.exit(1)
 
     # -------------------------------------------------------------------------
