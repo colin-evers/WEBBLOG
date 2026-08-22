@@ -9,8 +9,11 @@ integrated error handling, rollback safety, and a standardized GUI.
 
 Detailed Workflow Overview (5 Steps):
 -------------------------------------------------------------------------------
-1. Step 1 of 5: Initial Repository Pre-Check (Fetch & Status)
-   - Executes: `git fetch` (synchronizes remote branch state) followed by `git status`.
+1. Step 1 of 5: Initial Repository Pre-Check (Fetch, Status & Stash)
+   - Executes: `git fetch`, `git status`, and `git stash list`.
+   - Stash List Check:
+     * If existing stashes are detected: Prompts user with a confirmation dialog asking
+       whether to clear them (`git stash clear`) or preserve them before continuing.
    - Dynamic Branch & Cleanliness Handling:
      * Scenario A: Repository is Up-to-Date and Clean (Nothing to commit):
        - Displays: Status badge "UP TO DATE & CLEAN".
@@ -497,15 +500,36 @@ def main():
     branch = get_current_branch(repo_dir)
 
     # -------------------------------------------------------------------------
-    # STEP 1 of 5: Repository Pre-Check (git fetch && git status)
+    # STEP 1 of 5: Repository Pre-Check (git fetch && git status && git stash list)
     # -------------------------------------------------------------------------
-    step1_cmd = "git fetch && git status"
-    dlg1 = GitStepDialog(root, "Step 1 of 5: Repository Pre-Check (Fetch & Status)", 1, step1_cmd)
+    step1_cmd = "git fetch && git status && git stash list"
+    dlg1 = GitStepDialog(root, "Step 1 of 5: Repository Pre-Check (Fetch, Status & Stash)", 1, step1_cmd)
     root.update()
 
-    # Execute fetch followed by status to detect any branch discrepancies
+    # Execute fetch, status, and stash list to detect any branch discrepancies or saved stashes
     code1_fetch, out1_fetch, err1_fetch = run_git_command("git fetch", cwd=repo_dir)
     code1_status, out1_status, err1_status = run_git_command("git status", cwd=repo_dir)
+    code1_stash, out1_stash, _ = run_git_command("git stash list", cwd=repo_dir)
+
+    # Check if any previous stashes exist and ask user if they want to clear them
+    stash_report = ""
+    if out1_stash.strip():
+        ask_clear = messagebox.askyesno(
+            "Existing Git Stashes Detected",
+            f"The following saved Git stash(es) were detected on this repository:\n\n{out1_stash}\n\n"
+            "Do you want to clear/delete all existing stashes ('git stash clear') before proceeding?",
+            parent=dlg1.top
+        )
+        if ask_clear:
+            c_clear, out_clear, err_clear = run_git_command("git stash clear", cwd=repo_dir)
+            if c_clear == 0:
+                stash_report = "[git stash list]: All previous stashes cleared successfully by user."
+            else:
+                stash_report = f"[git stash list]: Error clearing stashes:\n{out_clear}\n{err_clear}"
+        else:
+            stash_report = f"[git stash list]: Existing stashes preserved:\n{out1_stash}"
+    else:
+        stash_report = "[git stash list]: No existing stashes found (stash list is empty)."
 
     combined_code1 = 0 if (code1_fetch == 0 and code1_status == 0) else (code1_status or code1_fetch)
     combined_out1 = []
@@ -517,6 +541,8 @@ def main():
         combined_out1.append(f"[git status output]:\n{out1_status}")
     if err1_status:
         combined_out1.append(f"[git status errors]:\n{err1_status}")
+    if stash_report:
+        combined_out1.append(stash_report)
 
     # Check repository state conditions
     is_behind = "is behind" in out1_status.lower() or "have diverged" in out1_status.lower()
@@ -845,7 +871,6 @@ def main():
     # STEP 5 of 5: Final Post-Update Status (git status)
     # -------------------------------------------------------------------------
     step5_cmd = "git status"
-    step55_cmd = "git status"
 
     def step5_cancel_handler(dialog):
         """Rolls back remote repository and local commit/staging while preserving working directory edits"""
