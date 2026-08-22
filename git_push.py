@@ -12,7 +12,8 @@ Workflow Overview (5 Steps):
 1. Step 1 of 5: Initial Repository Pre-Check (Fetch & Status)
    - Executes: `git fetch` (synchronizes remote branch state) followed by `git status`.
    - Discrepancy Detection:
-     * If local is UP-TO-DATE: Displays standard [ Next ] and [ Cancel / Exit ] buttons.
+     * If local is UP-TO-DATE & CLEAN (nothing to commit): Displays ONLY the [ Exit ] button.
+     * If local has MODIFICATIONS to commit: Displays standard [ Next ] and [ Cancel / Exit ] buttons.
      * If local is BEHIND remote: Displays warning badge and presents two explicit choices:
        - [ Pull & Proceed ] (Green): Safely stashes all tracked & untracked files (`git stash push -u`),
          rebases remote commits (`git pull --rebase`), and restores local edits (`git stash pop`),
@@ -496,8 +497,11 @@ def main():
     if err1_status:
         combined_out1.append(f"[git status errors]:\n{err1_status}")
 
-    # Check if local branch is behind the remote tracking branch
+    # Check repository state conditions
     is_behind = "is behind" in out1_status.lower() or "have diverged" in out1_status.lower()
+    is_clean = ("nothing to commit" in out1_status.lower() or "working tree clean" in out1_status.lower() or "working directory clean" in out1_status.lower())
+    is_ahead = "is ahead" in out1_status.lower()
+    is_clean_and_uptodate = is_clean and not is_behind and not is_ahead
 
     # Formulate safety explanation banner for the output window
     explanation_blocks = []
@@ -513,6 +517,16 @@ def main():
             f"    3. 'git stash pop' to restore all your uncommitted local edits on top.\n"
             "  ==> RESULT: Your local source code modifications are 100% preserved and safe.\n"
             "• If you click [ Exit ], the application closes and leaves the repository untouched.\n"
+            "======================================================================"
+        )
+    elif is_clean_and_uptodate:
+        explanation_blocks.append(
+            "======================================================================\n"
+            " REPOSITORY IS COMPLETELY UP TO DATE & CLEAN\n"
+            "======================================================================\n"
+            "• Your local branch is fully in-sync with the remote repository.\n"
+            "• Working tree is clean: there are no modified or untracked files to commit.\n"
+            "• No further action required. Click [ Exit ] to close.\n"
             "======================================================================"
         )
     else:
@@ -535,7 +549,22 @@ def main():
 
     dlg1.set_result(combined_code1, full_text1, "")
 
-    if is_behind:
+    if is_clean_and_uptodate:
+        # Nothing to commit, working tree clean -> No Next button, ONLY Exit button
+        dlg1.lbl_status.config(text="✔ UP TO DATE & CLEAN (Nothing to commit)", fg="#2E7D32")
+        dlg1.btn_ok.pack_forget()
+        dlg1.btn_cancel.config(
+            text="  Exit  ",
+            bg="#1F4E78",
+            fg="#FFFFFF",
+            font=("Segoe UI", 11, "bold"),
+            padx=18,
+            pady=4
+        )
+        dlg1.btn_cancel.focus_set()
+        dlg1.top.bind("<Return>", lambda e: dlg1.on_close())
+        dlg1.top.bind("<KP_Enter>", lambda e: dlg1.on_close())
+    elif is_behind:
         dlg1.lbl_status.config(text="⚠ BEHIND REMOTE (Upstream changes detected)", fg="#D97706")
         dlg1.btn_ok.config(text="  Pull & Proceed  ", bg="#2E7D32")
         dlg1.btn_cancel.config(text="Exit")
@@ -545,7 +574,7 @@ def main():
 
     root.wait_window(dlg1.top)
 
-    if not dlg1.result_proceed:
+    if is_clean_and_uptodate or not dlg1.result_proceed:
         sys.exit(0)
 
     # If the repository was behind and user clicked 'Pull & Proceed', pull latest changes safely
