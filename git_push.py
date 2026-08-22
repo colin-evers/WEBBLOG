@@ -15,10 +15,11 @@ Workflow Overview (5 Steps):
      * If local is UP-TO-DATE & CLEAN (nothing to commit): Displays ONLY the [ Exit ] button.
      * If local has MODIFICATIONS to commit: Displays standard [ Next ] and [ Cancel / Exit ] buttons.
      * If local is BEHIND remote: Displays warning badge and presents two explicit choices:
-       - [ Pull & Proceed ] (Green): Safely stashes all tracked & untracked files (`git stash push -u`),
-         rebases remote commits (`git pull --rebase`), and restores local edits (`git stash pop`),
-         then continues directly to Step 2.
-       - [ Exit ]: Closes the application immediately without altering the repository.
+        - [ Pull & Proceed ] (Green): Safely stashes all tracked & untracked files (`git stash push -u`),
+          rebases remote commits (`git pull --rebase`), and restores local edits (`git stash pop`).
+          If no local changes exist after pulling, shows a synchronized confirmation with ONLY an [ Exit ] button.
+          If uncommitted local changes exist, seamlessly proceeds to Step 2.
+        - [ Exit ]: Closes the application immediately without altering the repository.
 
 2. Step 2 of 5: Staging All Changes
    - Executes: `git add -A` (stages all modified, deleted, and untracked files).
@@ -627,6 +628,46 @@ def main():
                 )
             sys.exit(1)
 
+        # Check post-pull status to see if there are local uncommitted changes to proceed with
+        c_post_status, out_post_status, _ = run_git_command("git status", cwd=repo_dir)
+        is_clean_post_pull = (
+            ("nothing to commit" in out_post_status.lower() or "working tree clean" in out_post_status.lower() or "working directory clean" in out_post_status.lower())
+            and "is ahead" not in out_post_status.lower()
+        )
+
+        # If no local changes exist after pulling -> Show up-to-date dialog with ONLY Exit button
+        if is_clean_post_pull:
+            dlg_sync = GitStepDialog(root, "Repository Synchronized & Up to Date", 1, "git pull (Completed)")
+            dlg_sync.lbl_status.config(text="✔ UP TO DATE & CLEAN (No local changes to commit)", fg="#2E7D32")
+            dlg_sync.btn_ok.pack_forget()
+            dlg_sync.btn_cancel.config(
+                text="  Exit  ",
+                bg="#1F4E78",
+                fg="#FFFFFF",
+                font=("Segoe UI", 11, "bold"),
+                padx=18,
+                pady=4
+            )
+            sync_text = (
+                "======================================================================\n"
+                " REPOSITORY SYNCHRONIZED SUCCESSFULLY\n"
+                "======================================================================\n"
+                "• All latest remote commits have been pulled and integrated.\n"
+                "• Your local repository is now 100% up to date with the remote repository.\n"
+                "• Working tree is clean: there are no local modifications to commit.\n"
+                "• Click [ Exit ] to finish.\n"
+                "======================================================================\n\n"
+                f"[git pull output]:\n{out_pull or 'Already up to date.'}\n\n"
+                f"[git status output]:\n{out_post_status}"
+            )
+            dlg_sync.set_result(0, sync_text, "")
+            dlg_sync.btn_ok.pack_forget()
+            dlg_sync.btn_cancel.focus_set()
+            dlg_sync.top.bind("<Return>", lambda e: dlg_sync.on_close())
+            dlg_sync.top.bind("<KP_Enter>", lambda e: dlg_sync.on_close())
+            root.wait_window(dlg_sync.top)
+            sys.exit(0)
+
     # -------------------------------------------------------------------------
     # STEP 2 of 5: Staging All Changes (git add -A)
     # -------------------------------------------------------------------------
@@ -792,7 +833,6 @@ def main():
         dialog.txt_output.insert(tk.END, "1. Executing: git reset --soft HEAD~1\n")
         dialog.txt_output.see(tk.END)
         dialog.top.update()
-        step66_cmd = "git status"
 
         # 1. git reset --soft HEAD~1
         c1, out1, err1 = run_git_command("git reset --soft HEAD~1", cwd=repo_dir)
