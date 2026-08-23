@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture &amp; Codebase Analysis: WEBBLOG</title>
+<style>
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: #1f2328;
+    background-color: #ffffff;
+    max-width: 1040px;
+    margin: 35px auto;
+    padding: 0 35px 50px 35px;
+}
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 32px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #1f2328;
+}
+h1 { font-size: 2em; padding-bottom: 0.3em; border-bottom: 1px solid #d0d7de; color: #0f4c81; }
+h2 { font-size: 1.5em; padding-bottom: 0.3em; border-bottom: 1px solid #d0d7de; color: #1f4e78; }
+h3 { font-size: 1.25em; color: #24292f; }
+h4 { font-size: 1.1em; }
+p, blockquote, ul, ol, dl, table, pre {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+a {
+    color: #0969da;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+code {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    background-color: rgba(175, 184, 193, 0.2);
+    border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+pre {
+    padding: 16px;
+    overflow: auto;
+    font-size: 88%;
+    line-height: 1.45;
+    background-color: #f6f8fa;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+pre code {
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    font-size: 100%;
+}
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin-top: 12px;
+    margin-bottom: 20px;
+    width: 100%;
+    overflow: auto;
+    display: block;
+}
+table th, table td {
+    padding: 8px 14px;
+    border: 1px solid #d0d7de;
+}
+table tr:nth-child(2n) {
+    background-color: #f6f8fa;
+}
+table th {
+    font-weight: 600;
+    background-color: #f2f4f7;
+    text-align: left;
+}
+hr {
+    height: 0.25em;
+    padding: 0;
+    margin: 28px 0;
+    background-color: #d0d7de;
+    border: 0;
+}
+blockquote {
+    padding: 0 1em;
+    color: #57606a;
+    border-left: 0.25em solid #d0d7de;
+    margin: 0 0 16px 0;
+}
+ul, ol {
+    padding-left: 2em;
+}
+li {
+    margin-top: 0.25em;
+}
+.badge-guard {
+    background-color: #e8f1f8;
+    color: #1F4E78;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #b8d4e9;
+}
+.badge-method {
+    background-color: #f6f8fa;
+    color: #24292f;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #d0d7de;
+}
+</style>
+</head>
+<body class="markdown-body">
+
+<h1>Architecture &amp; Codebase Analysis: WEBBLOG</h1>
+
+<p>This document contains a comprehensive analysis of the <strong>WEBBLOG</strong> Python Flask web application codebase, including application architecture, execution lifecycles, database models, blueprint routes, templates, and styling.</p>
+
+<hr>
+
+<h2>1. Overall Application Architecture</h2>
+
+<p><code>WEBBLOG</code> is a <strong>Python Flask web application</strong> designed to record and present trading strategies, trade journals, P&amp;L analytics, and educational notes (focused on E-Micro Futures trading / MNQ).</p>
+
+<p>The project is structured using the <strong>Flask Application Factory Pattern</strong> combined with <strong>Flask Blueprints</strong> for modularity.</p>
+
+<pre><code>WEBBLOG/
+├── run.py                          # Application entry point &amp; CLI parser
+├── requirements.txt                # Python dependencies
+├── ARCHITECTURE.md                 # Architecture &amp; codebase documentation
+└── flaskblog/                      # Main package
+    ├── __init__.py                 # Application factory (create_app) &amp; extensions
+    ├── config.py                   # App configuration &amp; environment variables
+    ├── models.py                   # SQLAlchemy Models (User, Post)
+    ├── site.db                     # SQLite Database file
+    ├── users/                      # User authentication &amp; profile management
+    │   ├── forms.py                # WTForms (Login, Register, Account Update, Password Reset)
+    │   ├── routes.py               # User endpoints (login, logout, account, user_posts)
+    │   └── utils.py                # Helper utilities (save_picture, send_reset_email)
+    ├── posts/                      # Blog &amp; trade posting functionality
+    │   ├── forms.py                # Post WTForm (with extended teaser fields)
+    │   └── routes.py               # Post endpoints (CRUD, embed_viewer, detach_viewer)
+    ├── main/                       # Core navigation pages
+    │   └── routes.py               # Pages: intro, methods, trades, pnl, about
+    ├── errors/                     # HTTP Error Handlers
+    │   └── handlers.py             # Custom 404, 403, 500 error pages
+    ├── templates/                  # Jinja2 HTML templates
+    │   ├── layout.html             # Base layout template with nav &amp; assets
+    │   ├── frontend.html           # Landing page / Login entry
+    │   ├── intro.html, methods.html, trades.html, pnl.html, about.html ...
+    │   └── errors/                 # 404.html, 403.html, 500.html
+    └── static/                     # CSS stylesheets, JS scripts, images, PDFs
+        ├── main.css, study.css, modal.css, stylesheet.css, login.css
+        ├── js/ modalpics.js
+        └── profile_pics/</code></pre>
+
+<hr>
+
+<h2>2. Startup &amp; Execution Program Flow</h2>
+
+<pre><code>User -&gt; run.py [-port PORT] [-debug] [-fdt]
+      -&gt; argparse parses CLI arguments
+      -&gt; create_app(config_class=Config) in flaskblog/__init__.py
+      -&gt; Init db, bcrypt, login_manager, mail
+      -&gt; Register blueprints: users, posts, main, errors
+      -&gt; Returns app instance
+      -&gt; app.run(port=args.port)</code></pre>
+
+<ol>
+<li><strong>Invocation:</strong> Executing <code>run.py</code> parses command line arguments via <code>argparse</code>:
+<ul>
+<li><code>-port</code>: Custom port (defaults to 5000).</li>
+<li><code>-debug</code>: Activates Flask Debugger.</li>
+<li><code>-fdt</code>: Enables <code>Flask-DebugToolbar</code>.</li>
+<li><code>-fdt_redirect</code>: Controls DebugToolbar redirect intercepts (<code>DEBUG_TB_INTERCEPT_REDIRECTS</code>).</li>
+</ul></li>
+<li><strong>App Instantiation:</strong> <code>run.py</code> calls <code>create_app()</code> from <code>flaskblog/__init__.py</code>.</li>
+<li><strong>Extension Binding:</strong> Loads <code>Config</code> settings from <code>flaskblog/config.py</code> and initializes extensions (<code>db</code>, <code>bcrypt</code>, <code>login_manager</code>, <code>mail</code>).</li>
+<li><strong>Blueprint Registration:</strong> Registers blueprinted route modules (<code>users</code>, <code>posts</code>, <code>main</code>, <code>errors</code>).</li>
+</ol>
+
+<hr>
+
+<h2>3. Database Schema &amp; Data Models</h2>
+
+<p>Defined in <code>flaskblog/models.py</code>:</p>
+
+<h3><code>User</code> Model</h3>
+<ul>
+<li><code>id</code> (<code>Integer</code>, Primary Key)</li>
+<li><code>username</code> (<code>String(20)</code>, Unique, Not Null)</li>
+<li><code>email</code> (<code>String(120)</code>, Unique, Not Null)</li>
+<li><code>image_file</code> (<code>String(20)</code>, Default: <code>'default.jpg'</code>)</li>
+<li><code>password</code> (<code>String(60)</code>, Hashed with Bcrypt)</li>
+<li><code>posts</code> (<code>db.relationship('Post', backref='author', lazy=True)</code>)</li>
+<li><strong>Methods:</strong> <code>get_reset_token()</code> (uses <code>itsdangerous</code> <code>TimedJSONWebSignatureSerializer</code>), <code>verify_reset_token(token)</code>.</li>
+</ul>
+
+<h3><code>Post</code> Model</h3>
+<ul>
+<li><code>id</code> (<code>Integer</code>, Primary Key)</li>
+<li><code>title</code> (<code>String(100)</code>, Not Null)</li>
+<li><code>date_posted</code> (<code>DateTime</code>, Default: <code>utcnow</code>)</li>
+<li><code>content</code> (<code>Text</code>, Not Null)</li>
+<li><code>user_id</code> (<code>Integer</code>, Foreign Key <code>user.id</code>, Not Null)</li>
+<li><strong>Custom Teaser Metadata Fields:</strong>
+<ul>
+<li><code>teaser_title</code>, <code>teaser_details</code>, <code>teaser_caption</code>, <code>teaser_img</code>, <code>teaser_content</code>, <code>teaser_wkid</code></li>
+</ul></li>
+</ul>
+
+<hr>
+
+<h2>4. User Authentication &amp; Authorization Flow</h2>
+
+<p>Handled in <code>flaskblog/users/routes.py</code>, <code>flaskblog/users/forms.py</code>, and <code>flaskblog/users/utils.py</code>:</p>
+
+<ul>
+<li><strong>Landing Route (<code>/</code>):</strong> Serves <code>frontend.html</code>. If user is authenticated, redirects straight to <code>/intro</code>.</li>
+<li><strong>Guest User Mode:</strong> Special check in <code>index()</code> route allowing <code>"GuestUser"</code> fast pass to <code>/intro</code>.</li>
+<li><strong>Register (<code>/register</code>):</strong> Hashes password via <code>bcrypt.generate_password_hash()</code> and stores user.</li>
+<li><strong>Account Updates (<code>/account</code>):</strong> <span class="badge-guard">@login_required</span>. Allows updating username, email, and uploading profile pictures. <code>save_picture()</code> generates a random hex filename, resizes the image to 125x125 using Pillow (<code>PIL.Image</code>), and stores it in <code>static/profile_pics/</code>.</li>
+<li><strong>Password Reset (<code>/reset_password</code> &amp; <code>/reset_password/&lt;token&gt;</code>):</strong> Generates time-sensitive token, emails recipient via <code>Flask-Mail</code> (<code>send_reset_email()</code>), and verifies token before updating the password.</li>
+</ul>
+
+<hr>
+
+<h2>5. Content &amp; Post Management Flow</h2>
+
+<p>Handled in <code>flaskblog/posts/routes.py</code> and <code>flaskblog/posts/forms.py</code>:</p>
+
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Method</th>
+<th>Guard</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/post/new</code></td>
+<td><span class="badge-method">GET, POST</span></td>
+<td><span class="badge-guard">@login_required</span></td>
+<td>Creates a new post with teaser metadata fields.</td>
+</tr>
+<tr>
+<td><code>/post/&lt;post_id&gt;</code></td>
+<td><span class="badge-method">GET</span></td>
+<td>Public</td>
+<td>Displays post details. Checks <code>teaser_wkid</code> to pass <code>weekly</code> variable to template.</td>
+</tr>
+<tr>
+<td><code>/embed_viewer/&lt;weekly_id&gt;</code></td>
+<td><span class="badge-method">GET</span></td>
+<td>Public</td>
+<td>Displays embedded weekly trade viewer template (<code>embed_viewer.html</code>).</td>
+</tr>
+<tr>
+<td><code>/detach_viewer/&lt;weekly_id&gt;</code></td>
+<td><span class="badge-method">GET</span></td>
+<td>Public</td>
+<td>Displays standalone/detached weekly trade viewer template (<code>detach_viewer.html</code>).</td>
+</tr>
+<tr>
+<td><code>/post/&lt;post_id&gt;/update</code></td>
+<td><span class="badge-method">GET, POST</span></td>
+<td><span class="badge-guard">@login_required</span></td>
+<td>Updates post; enforces author check <code>post.author == current_user</code> (returns <code>403</code> if mismatch).</td>
+</tr>
+<tr>
+<td><code>/post/&lt;post_id&gt;/delete</code></td>
+<td><span class="badge-method">POST</span></td>
+<td><span class="badge-guard">@login_required</span></td>
+<td>Deletes post; enforces author check.</td>
+</tr>
+</tbody>
+</table>
+
+<hr>
+
+<h2>6. Main Navigation &amp; Page Routing</h2>
+
+<p>Handled in <code>flaskblog/main/routes.py</code>:</p>
+
+<ul>
+<li>All main views require authentication (<code>current_user.is_authenticated</code>). Unauthenticated visitors are redirected to <code>users.index</code> (<code>/</code>).</li>
+<li><strong><code>/intro</code></strong>: High-level E-Micro Futures trading intro (<code>intro.html</code>), contract specs, schedule, strategy notes, and poem ("Shattered Innocence").</li>
+<li><strong><code>/methods</code></strong>: Trading methodology notes and study documentation (<code>methods.html</code>).</li>
+<li><strong><code>/trades</code></strong>: Paginated list of blog/trade posts (4 per page) using SQLAlchemy <code>.paginate()</code>.</li>
+<li><strong><code>/pnl</code></strong>: Profit &amp; loss tracking metrics and visualizations (<code>pnl.html</code>).</li>
+<li><strong><code>/about</code></strong>: System info, app root path, and instance path details (<code>about.html</code>).</li>
+</ul>
+
+<hr>
+
+<h2>7. HTML Template Architecture</h2>
+
+<p>Templates use <strong>Jinja2 inheritance</strong> centered around <code>flaskblog/templates/layout.html</code>:</p>
+
+<pre><code>layout.html (Base Structure, Navbar, Flash Alerts, JS/CSS Links)
+  ├── intro.html        (Extends layout.html -&gt; {% block content %})
+  ├── methods.html      (Extends layout.html -&gt; {% block content %})
+  ├── trades.html       (Extends layout.html -&gt; {% block content %})
+  ├── pnl.html          (Extends layout.html -&gt; {% block content %})
+  ├── about.html        (Extends layout.html -&gt; {% block content %})
+  ├── post.html         (Extends layout.html -&gt; {% block content %})
+  ├── account.html      (Extends layout.html -&gt; {% block content %})
+  └── login/register    (Extends layout.html or standalone frontend.html)</code></pre>
+
+<ul>
+<li><strong>Navbar:</strong> Bootstrap 4 navigation header dynamically rendering nav links based on <code>current_user</code> state and guest vs member role.</li>
+<li><strong>Flashed Messages:</strong> Uses <code>get_flashed_messages(with_categories=true)</code> rendered inside dynamic Bootstrap <code>.alert</code> containers.</li>
+<li><strong>MathJax Integration:</strong> Included in <code>layout.html</code> for rendering MathML mathematical expressions.</li>
+<li><strong>Modal Image Viewer:</strong> Global <code>#myModal</code> overlay controlled by <code>static/js/modalpics.js</code> for enlarging inline trade chart screenshots.</li>
+</ul>
+
+<hr>
+
+<h2>8. Styling &amp; CSS Asset Hierarchy</h2>
+
+<p>Assets in <code>flaskblog/static/</code>:</p>
+
+<ol>
+<li><strong><code>main.css</code></strong>: Core styling for layout, navigation bar (<code>bg-steel</code>), site header, content blocks, and flash message centering.</li>
+<li><strong><code>study.css</code></strong>: Deep styling for trading study notes, method cards, code/chart containers, and typography.</li>
+<li><strong><code>modal.css</code></strong>: Popup modal overlay rules for viewing full-size chart images.</li>
+<li><strong><code>stylesheet.css</code></strong>: Custom layout overrides and utility styles.</li>
+<li><strong><code>login.css</code></strong>: Styling specifically for the landing page login form (<code>frontend.html</code>).</li>
+<li><strong>External Libraries:</strong> Bootstrap 4.0.0 (CDN), FontAwesome 5 (CDN), Google Fonts (<code>Lobster Two</code>).</li>
+</ol>
+
+<hr>
+
+<h2>9. Proposed P&amp;L Module Specification (Static Chart Caching)</h2>
+
+<h3>Technical Design Overview</h3>
+<p>The P&amp;L module (<code>/pnl</code> route) is designed to display daily, weekly, and monthly performance charts using a <strong>server-side static chart caching strategy</strong>:</p>
+
+<ul>
+<li><strong>Target Static Storage:</strong>
+<ul>
+<li><code>flaskblog/static/daily_pnl/</code></li>
+<li><code>flaskblog/static/weekly_pnl/</code></li>
+<li><code>flaskblog/static/monthly_pnl/</code></li>
+</ul></li>
+</ul>
+
+<h3>UI &amp; Navigation Header</h3>
+<ul>
+<li><strong>Timeframe Selector:</strong> Dropdown menu offering <code>{ Daily | Weekly | Monthly }</code>.</li>
+<li><strong>Dynamic Inputs:</strong>
+<ul>
+<li><strong>Daily:</strong> Single date picker (<code>&lt;input type="date"&gt;</code>).</li>
+<li><strong>Weekly:</strong> Week picker or Monday start-date (<code>&lt;input type="week"&gt;</code>).</li>
+<li><strong>Monthly:</strong> Start date picker (<code>&lt;input type="date"&gt;</code>), automatically calculating metrics up to the current date (<code>datetime.utcnow()</code>).</li>
+</ul></li>
+</ul>
+
+<h3>Caching Execution Lifecycle</h3>
+<ol>
+<li>User submits timeframe &amp; date parameters to <code>/pnl</code>.</li>
+<li>Flask constructs the expected target chart filename (e.g., <code>daily_2026-07-28.png</code>).</li>
+<li>Flask checks <code>os.path.exists(...)</code>:
+<ul>
+<li><strong>Cache Hit:</strong> If file exists, Flask skips DB queries and chart rendering; serves <code>url_for('static', filename='daily_pnl/daily_2026-07-28.png')</code>.</li>
+<li><strong>Cache Miss:</strong> If file does not exist, Flask queries trade data, computes statistics, generates the <code>.png</code> plot (e.g. via Matplotlib), saves it to disk, and serves the static image.</li>
+</ul></li>
+</ol>
+
+</body>
+</html>

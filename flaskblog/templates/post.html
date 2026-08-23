@@ -21,7 +21,6 @@
       <br>
       <script>
         function myDetach() {
-            // Open at 95% of screen so the PDF loads at the right size immediately
             var w = Math.floor(window.screen.availWidth * 0.50);
             var h = Math.floor(window.screen.availHeight * 0.50);
             var left = Math.floor((window.screen.availWidth - w) / 2);
@@ -29,10 +28,12 @@
         
             var myWin = window.open(
                 '/detach_viewer/{{weekly}}', 
-                'myWindow', 
+                'tradeViewerWindow_{{weekly}}', 
                 'width=' + w + ',height=' + h + ',left=' + left + ',top=' + top + ',resizable=yes,scrollbars=yes'
             );
-            myWin.focus();
+            if (myWin && !myWin.closed) {
+                myWin.focus();
+            }
         }
       </script>
       {% endif %}

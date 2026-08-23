@@ -108,10 +108,27 @@
         }
 
         .progress-text {
-            color: #666;
+            color: #888;
             font-size: 11px;
             font-family: Arial, sans-serif;
             margin-top: 8px;
+        }
+
+        .retry-btn {
+            display: none;
+            margin-top: 15px;
+            padding: 6px 18px;
+            font-size: 13px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .retry-btn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -120,12 +137,13 @@
         <div class="pdf-wrapper" id="pdfWrapper">
             <!-- Loading overlay -->
             <div class="loading-overlay" id="loadingOverlay">
-                <div class="spinner"></div>
-                <div class="loading-text">Loading PDF...</div>
-                <div class="progress-container">
+                <div class="spinner" id="loadingSpinner"></div>
+                <div class="loading-text" id="loadingText">Loading PDF...</div>
+                <div class="progress-container" id="progressContainer">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
                 <div class="progress-text" id="progressText">0%</div>
+                <button class="retry-btn" id="retryBtn" type="button">Retry Loading</button>
             </div>
 
             <embed 
@@ -140,27 +158,65 @@
             var wrapper = document.getElementById('pdfWrapper');
             var embed = document.getElementById('pdfEmbed');
             var overlay = document.getElementById('loadingOverlay');
+            var spinner = document.getElementById('loadingSpinner');
+            var loadingText = document.getElementById('loadingText');
+            var progressContainer = document.getElementById('progressContainer');
             var progressFill = document.getElementById('progressFill');
             var progressText = document.getElementById('progressText');
+            var retryBtn = document.getElementById('retryBtn');
             var baseUrl = "/static/pdf/weekly{{ weekly }}.pdf";
-            var resizeTimer;
+            
+            var activeXhr = null;
+            var hideTimer = null;
+            var resizeTimer = null;
+            var activeBlobUrl = null;
             var lastW = window.innerWidth;
             var lastH = window.innerHeight;
             
-            function getPdfUrl() {
+            function getViewParams() {
                 var isEdge = navigator.userAgent.indexOf('Edg') > -1;
                 var viewParam = isEdge ? 'FitV' : 'Fit';
-                return baseUrl + "#view=" + viewParam + "&toolbar=0&navpanes=0&scrollbar=0";
+                return "#view=" + viewParam + "&toolbar=0&navpanes=0&scrollbar=0";
+            }
+
+            function getPdfUrl() {
+                return baseUrl + getViewParams();
             }
             
             function hideLoader() {
+                if (hideTimer) {
+                    clearTimeout(hideTimer);
+                    hideTimer = null;
+                }
                 overlay.classList.add('hidden');
             }
             
-            function showLoader() {
+            function showLoader(text) {
+                if (hideTimer) {
+                    clearTimeout(hideTimer);
+                    hideTimer = null;
+                }
                 overlay.classList.remove('hidden');
+                spinner.style.display = 'block';
+                progressContainer.style.display = 'block';
+                progressText.style.display = 'block';
+                retryBtn.style.display = 'none';
+                loadingText.textContent = text || 'Loading PDF...';
                 progressFill.style.width = '0%';
                 progressText.textContent = '0%';
+            }
+
+            function showError(message) {
+                if (hideTimer) {
+                    clearTimeout(hideTimer);
+                    hideTimer = null;
+                }
+                overlay.classList.remove('hidden');
+                spinner.style.display = 'none';
+                progressContainer.style.display = 'none';
+                progressText.style.display = 'none';
+                loadingText.textContent = message || 'Failed to load PDF.';
+                retryBtn.style.display = 'inline-block';
             }
             
             function updateProgress(percent) {
@@ -169,13 +225,23 @@
             }
             
             function loadPdf() {
-                var pdfUrl = getPdfUrl();
-                var xhr = new XMLHttpRequest();
+                // Abort any ongoing in-flight XHR request to prevent race conditions
+                if (activeXhr) {
+                    try {
+                        activeXhr.abort();
+                    } catch (e) {}
+                    activeXhr = null;
+                }
                 
-                xhr.open('GET', pdfUrl, true);
+                showLoader('Downloading PDF...');
+                
+                var xhr = new XMLHttpRequest();
+                activeXhr = xhr;
+                
+                // Pure clean URL for HTTP request (no URL fragment identifiers in XHR)
+                xhr.open('GET', baseUrl, true);
                 xhr.responseType = 'blob';
                 
-                // Track download progress - fires as bytes arrive
                 xhr.onprogress = function(event) {
                     if (event.lengthComputable) {
                         var percent = (event.loaded / event.total) * 100;
@@ -185,35 +251,71 @@
                     }
                 };
                 
-                // Fires when download is COMPLETE
                 xhr.onload = function() {
-                    if (xhr.status === 200) {
+                    if (xhr !== activeXhr) return; // Ignore stale request callbacks
+                    activeXhr = null;
+                    
+                    if (xhr.status >= 200 && xhr.status < 300 && xhr.response) {
                         updateProgress(100);
                         progressText.textContent = 'Rendering...';
                         
-                        // Set embed src (preserves all URL parameters)
-                        embed.src = pdfUrl;
+                        try {
+                            // Revoke previous blob URL if any to free memory
+                            if (activeBlobUrl) {
+                                URL.revokeObjectURL(activeBlobUrl);
+                            }
+                            // Create direct memory Blob URL with PDF viewer hash parameters
+                            activeBlobUrl = URL.createObjectURL(xhr.response);
+                            embed.src = activeBlobUrl + getViewParams();
+                        } catch (err) {
+                            // Fallback to direct static path if Blob URL fails
+                            embed.src = getPdfUrl();
+                        }
                         
-                        // Wait for PDF viewer to render, then fade out
-                        setTimeout(hideLoader, 3500);
+                        // Smoothly hide the loader once rendered
+                        hideTimer = setTimeout(hideLoader, 1500);
                     } else {
-                        embed.src = pdfUrl;
-                        setTimeout(hideLoader, 2000);
+                        // Direct fallback to static file if server returns non-200 blob
+                        embed.src = getPdfUrl();
+                        hideTimer = setTimeout(hideLoader, 2500);
                     }
                 };
                 
                 xhr.onerror = function() {
-                    embed.src = pdfUrl;
-                    setTimeout(hideLoader, 2000);
+                    if (xhr !== activeXhr) return;
+                    activeXhr = null;
+                    
+                    // Attempt direct load fallback before showing error
+                    try {
+                        embed.src = getPdfUrl();
+                        hideTimer = setTimeout(hideLoader, 2500);
+                    } catch (err) {
+                        showError('Unable to load PDF. Please retry.');
+                    }
+                };
+
+                xhr.onabort = function() {
+                    // Cleanly handled without triggering error state
                 };
                 
-                xhr.send();
+                try {
+                    xhr.send();
+                } catch (e) {
+                    embed.src = getPdfUrl();
+                    hideTimer = setTimeout(hideLoader, 2500);
+                }
             }
             
+            // Retry button click event
+            retryBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                loadPdf();
+            });
+
             // Initial load
             loadPdf();
             
-            // Handle window resize (maximize/restore)
+            // Handle window resize (maximize/restore) cleanly with debouncing
             window.addEventListener('resize', function() {
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(function() {
@@ -223,23 +325,9 @@
                     if (dw > 50 || dh > 50) {
                         lastW = window.innerWidth;
                         lastH = window.innerHeight;
-                        
-                        showLoader();
-                        
-                        var oldEmbed = embed;
-                        var newEmbed = document.createElement('embed');
-                        newEmbed.id = 'pdfEmbed';
-                        newEmbed.type = 'application/pdf';
-                        newEmbed.title = 'Weekly Trading PDF';
-                        newEmbed.style.cssText = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;border:none;';
-                        
-                        wrapper.appendChild(newEmbed);
-                        wrapper.removeChild(oldEmbed);
-                        embed = newEmbed;
-                        
-                        setTimeout(loadPdf, 100);
+                        loadPdf();
                     }
-                }, 300);
+                }, 350);
             });
         })();
     </script>
