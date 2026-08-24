@@ -4,6 +4,8 @@
 .agents
 ARCHITECTURE.md
 pyrefly.toml
+git_push.bat
+git_push.py
 #flaskblog/static/pdf/
 #flaskblog/static/pdf/*.001
 #flaskblog/static/pdf/*.002
@@ -178,3 +180,4 @@ flaskblog/static/pdf/weekly072726.pdf
 flaskblog/static/pdf/weekly080326.pdf
 flaskblog/static/pdf/weekly081026.pdf
 flaskblog/static/pdf/weekly081726.pdf
+flaskblog/static/pdf/weekly082426.pdf
