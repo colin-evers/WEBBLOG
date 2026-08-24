@@ -2,10 +2,12 @@
 *.pyc
 .vscode
 .agents
+.post_content_backup.json
 ARCHITECTURE.md
 pyrefly.toml
 git_push.bat
 git_push.py
+
 #flaskblog/static/pdf/
 #flaskblog/static/pdf/*.001
 #flaskblog/static/pdf/*.002
