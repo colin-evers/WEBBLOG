@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebBlog Codebase &amp; Architecture Analysis</title>
+
+<!-- Fonts & Highlight.js CSS -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+
+<style>
+:root {
+    --color-canvas-default: #ffffff;
+    --color-canvas-subtle: #f6f8fa;
+    --color-canvas-inset: #f0f2f5;
+    --color-border-default: #d0d7de;
+    --color-border-muted: #e1e4e8;
+    --color-fg-default: #1f2328;
+    --color-fg-muted: #656d76;
+    --color-fg-subtle: #6e7781;
+    --color-accent-fg: #0969da;
+    --color-accent-emphasis: #0969da;
+    --color-danger-fg: #cf222e;
+    --color-danger-subtle: #ffebe9;
+    --color-danger-border: rgba(255, 129, 130, 0.4);
+    --color-attention-fg: #9a6700;
+    --color-attention-subtle: #fff8c5;
+    --color-attention-border: rgba(212, 167, 44, 0.4);
+    --color-success-fg: #1a7f37;
+    --color-success-subtle: #dafbe1;
+    --color-header-navy: #0f4c81;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--color-fg-default);
+    background-color: #f8fafc;
+    margin: 0;
+    padding: 0;
+}
+
+.page-wrapper {
+    max-width: 1060px;
+    margin: 32px auto;
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-default);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 48px 56px;
+}
+
+/* Header Banner */
+.doc-header {
+    border-bottom: 2px solid var(--color-border-default);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+}
+
+.doc-header h1 {
+    font-size: 2.2em;
+    font-weight: 700;
+    color: var(--color-header-navy);
+    margin: 0 0 10px 0;
+    letter-spacing: -0.5px;
+}
+
+.doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--color-fg-muted);
+}
+
+.doc-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 12px;
+    background: #e1f0ff;
+    color: #0366d6;
+    border: 1px solid #c8e1ff;
+}
+
+/* Navigation / Quick Links */
+.toc-nav {
+    background: var(--color-canvas-subtle);
+    border: 1px solid var(--color-border-default);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 36px;
+}
+
+.toc-nav-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-fg-muted);
+    margin-bottom: 10px;
+}
+
+.toc-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 8px 16px;
+}
+
+.toc-nav li a {
+    color: var(--color-accent-fg);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.toc-nav li a:hover {
+    text-decoration: underline;
+}
+
+/* Typography */
+h2 {
+    font-size: 1.55em;
+    font-weight: 600;
+    color: #1f4e78;
+    margin-top: 40px;
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+h3 {
+    font-size: 1.25em;
+    font-weight: 600;
+    color: #24292f;
+    margin-top: 26px;
+    margin-bottom: 12px;
+}
+
+h4 {
+    font-size: 1.08em;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+a {
+    color: var(--color-accent-fg);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+hr {
+    height: 1px;
+    border: 0;
+    background-color: var(--color-border-default);
+    margin: 36px 0;
+}
+
+ul, ol {
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding-left: 26px;
+}
+
+li {
+    margin-top: 6px;
+}
+
+li > ul, li > ol {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+/* Inline Code & Blocks */
+code {
+    font-family: var(--font-mono);
+    font-size: 86%;
+    padding: 0.2em 0.45em;
+    background-color: rgba(175, 184, 193, 0.2);
+    border-radius: 5px;
+    color: #24292f;
+}
+
+pre {
+    background-color: var(--color-canvas-subtle);
+    border: 1px solid var(--color-border-default);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin: 14px 0 20px 0;
+    position: relative;
+}
+
+pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 100%;
+    color: inherit;
+}
+
+/* Diagrams */
+.diagram-container {
+    background: #ffffff;
+    border: 1px solid var(--color-border-default);
+    border-radius: 8px;
+    padding: 24px;
+    margin: 20px 0 28px 0;
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.mermaid {
+    text-align: center;
+}
+
+/* Callouts / Alerts */
+.callout {
+    padding: 16px 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    border-left: 5px solid;
+    font-size: 14.5px;
+}
+
+.callout-title {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.callout-caution {
+    background-color: var(--color-danger-subtle);
+    border-color: var(--color-danger-fg);
+    color: #4c1114;
+}
+
+.callout-caution .callout-title {
+    color: var(--color-danger-fg);
+}
+
+.callout-warning {
+    background-color: var(--color-attention-subtle);
+    border-color: #d4a72c;
+    color: #4d3800;
+}
+
+.callout-warning .callout-title {
+    color: var(--color-attention-fg);
+}
+
+.callout-content p:last-child {
+    margin-bottom: 0;
+}
+
+.callout-content ul {
+    margin-bottom: 8px;
+}
+
+/* Tables */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin: 20px 0 26px 0;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-default);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--color-canvas-subtle);
+    color: var(--color-fg-default);
+    font-weight: 600;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border-muted);
+    vertical-align: top;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:nth-child(even) {
+    background-color: #fafbfc;
+}
+
+tr:hover {
+    background-color: #f3f6f9;
+}
+
+/* Code file path links in table */
+.filepath {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-accent-fg);
+}
+
+/* Footer */
+.doc-footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border-default);
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-fg-muted);
+}
+
+@media print {
+    body {
+        background-color: #ffffff;
+    }
+    .page-wrapper {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+    }
+    .toc-nav {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-wrapper {
+        padding: 24px 20px;
+        margin: 0;
+        border-radius: 0;
+        border: none;
+    }
+    .doc-header h1 {
+        font-size: 1.7em;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+    <header class="doc-header">
+        <h1>WebBlog Codebase &amp; Architecture Analysis</h1>
+        <div class="doc-meta">
+            <span><strong>Target:</strong> WEBBLOG (MNQ E-Micro Trading Journal)</span>
+            <span><strong>Framework:</strong> Python / Flask</span>
+            <span><strong>Database:</strong> SQLite (<code>site.db</code>)</span>
+            <span><strong>Status:</strong> <span class="badge">Active / Verified</span></span>
+        </div>
+    </header>
+
+    <nav class="toc-nav" aria-label="Table of Contents">
+        <div class="toc-nav-title">Quick Navigation</div>
+        <ul>
+            <li><a href="#section-1">1. Executive Summary</a></li>
+            <li><a href="#section-2">2. System Architecture &amp; Component Inventory</a></li>
+            <li><a href="#section-3">3. Database Schema &amp; Data Models</a></li>
+            <li><a href="#section-4">4. Key Workflows &amp; Features</a></li>
+            <li><a href="#section-5">5. Security Vulnerabilities &amp; Critical Findings</a></li>
+            <li><a href="#section-6">6. Bugs &amp; Technical Debt</a></li>
+            <li><a href="#section-7">7. Prioritized Recommendations</a></li>
+        </ul>
+    </nav>
+
+    <!-- SECTION 1 -->
+    <section id="section-1">
+        <h2>1. Executive Summary</h2>
+        <p><strong>WebBlog</strong> is a Python Flask web application tailored as an active trading journal, methodology reference, and performance log for <strong>E-Micro Futures (MNQ)</strong> trading on the CME. Originally derived from the standard Corey Schafer Flask application architecture, it has been substantially customized with:</p>
+        <ul>
+            <li>A specialized <strong>Weekly Trade Log &amp; Teaser</strong> data pipeline.</li>
+            <li>A dedicated, decoupled <strong>PDF trade chart viewer</strong> (<code>detach_viewer.html</code> &amp; <code>embed_viewer.html</code>) with dynamic browser-specific zoom/fit parameters.</li>
+            <li>A dual-tiered authentication system distinguishing <strong>Guest Visitors</strong> from <strong>Members / Authors</strong>.</li>
+            <li>A custom 930+ line <strong>Tkinter Git Automation GUI</strong> (<code>git_push.py</code>) with automatic rollbacks for local and remote repositories.</li>
+            <li>Deployment support for <strong>PythonAnywhere</strong> (<code>evers.pythonanywhere.com</code>).</li>
+            <li>A live SQLite database (<code>site.db</code>) holding <strong>170+ trade logs</strong> actively maintained up through September 2026.</li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <!-- SECTION 2 -->
+    <section id="section-2">
+        <h2>2. System Architecture &amp; Component Inventory</h2>
+
+        <div class="diagram-container">
+            <pre class="mermaid">
+graph TD
+    CLI[run.py CLI / WSGI Handler] --> Factory[create_app in flaskblog/__init__.py]
+    Factory --> Config[Config in flaskblog/config.py]
+    Factory --> Exts[Extensions: db, bcrypt, login_manager, mail]
+    Factory --> BP_Main[Blueprint: main]
+    Factory --> BP_Users[Blueprint: users]
+    Factory --> BP_Posts[Blueprint: posts]
+    Factory --> BP_Errors[Blueprint: errors]
+    
+    BP_Users --> AuthViews[Guest Login / Member Login / Reset]
+    BP_Posts --> PostViews[Trade Posts / PDF Detach Viewer]
+    BP_Main --> PageViews[Intro / Methods / Trades / P&amp;L / About]
+    
+    Exts --> DB[(SQLite: site.db)]
+    PostViews --> PDFStatic[Static PDFs: /static/pdf/weekly*.pdf]
+    PostViews --> ImgStatic[Static Images: /static/img/BlogPics/*]
+            </pre>
+        </div>
+
+        <h3>Directory &amp; File Structure</h3>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 22%;">Component</th>
+                        <th style="width: 33%;">Path</th>
+                        <th style="width: 45%;">Responsibility</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Application Runner</strong></td>
+                        <td><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/run.py">run.py</a></td>
+                        <td>Parses command-line flags (<code>-port</code>, <code>-debug</code>, <code>-fdt</code>, <code>-fdt_redirect</code>) and starts the server.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>App Factory</strong></td>
+                        <td><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/__init__.py">flaskblog/__init__.py</a></td>
+                        <td>Initializes Flask extensions and registers modular blueprints.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Configuration</strong></td>
+                        <td><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/config.py">flaskblog/config.py</a></td>
+                        <td>Defines database URI, application secrets, and email SMTP parameters.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Models</strong></td>
+                        <td><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/models.py">flaskblog/models.py</a></td>
+                        <td>Defines <code>User</code> and <code>Post</code> database tables and token generation.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Users Blueprint</strong></td>
+                        <td><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/users/">flaskblog/users/</a></td>
+                        <td>Login routing, registration, profile updates (Pillow image thumbnailing), password resets.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Posts Blueprint</strong></td>
+                        <td><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/posts/">flaskblog/posts/</a></td>
+                        <td>Trade blog entries, CRUD handlers, and specialized PDF viewers.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Main Blueprint</strong></td>
+                        <td><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/main/">flaskblog/main/</a></td>
+                        <td>Informational pages (<code>intro</code>, <code>methods</code>, <code>trades</code>, <code>pnl</code>, <code>about</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Error Handlers</strong></td>
+                        <td><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/errors/">flaskblog/errors/</a></td>
+                        <td>Custom Jinja2 error pages for HTTP 403, 404, and 500.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Git Tooling</strong></td>
+                        <td><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/git_push.py">git_push.py</a></td>
+                        <td>Custom Tkinter desktop GUI for step-by-step git staging, committing, pushing, and rollbacks.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>WSGI Configuration</strong></td>
+                        <td><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/%23%20This%20file%20contains%20the%20WSGI%20configuration%20require.py"># This file contains...</a></td>
+                        <td>PythonAnywhere web service entry point loading <code>run.app as application</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- SECTION 3 -->
+    <section id="section-3">
+        <h2>3. Database Schema &amp; Data Models</h2>
+        <p>Defined in <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/models.py">flaskblog/models.py</a>:</p>
+
+        <h3>3.1 <code>User</code> Model</h3>
+        <ul>
+            <li><code>id</code> (<code>Integer</code>, Primary Key)</li>
+            <li><code>username</code> (<code>String(20)</code>, Unique, Not Null)</li>
+            <li><code>email</code> (<code>String(120)</code>, Unique, Not Null)</li>
+            <li><code>image_file</code> (<code>String(20)</code>, Default: <code>'default.jpg'</code>)</li>
+            <li><code>password</code> (<code>String(60)</code>, Hashed with Bcrypt)</li>
+            <li><code>posts</code> (<code>relationship</code> back-referenced to <code>Post</code>)</li>
+            <li>Helper methods: <a href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/models.py#L21-L24"><code>get_reset_token</code></a> and <a href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/models.py#L25-L33"><code>verify_reset_token</code></a>.</li>
+        </ul>
+
+        <h3>3.2 <code>Post</code> Model</h3>
+        <ul>
+            <li>Standard fields: <code>id</code>, <code>title</code>, <code>date_posted</code>, <code>content</code>, <code>user_id</code> (foreign key to <code>user.id</code>).</li>
+            <li><strong>Extended Teaser Metadata Fields</strong> (tailored for weekly trading cards):
+                <ul>
+                    <li><code>teaser_title</code> (<code>Text</code>): Title displayed on card view.</li>
+                    <li><code>teaser_details</code> (<code>Text</code>): Short timeframe or metadata badge.</li>
+                    <li><code>teaser_caption</code> (<code>Text</code>): Summary notes for the trade week.</li>
+                    <li><code>teaser_img</code> (<code>Text</code>): Static file path for teaser preview image.</li>
+                    <li><code>teaser_content</code> (<code>Text</code>): Teaser body snippet.</li>
+                    <li><code>teaser_wkid</code> (<code>Text</code>): Weekly identifier (e.g. <code>'090726'</code>, linking to <code>/static/pdf/weekly090726.pdf</code>).</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <!-- SECTION 4 -->
+    <section id="section-4">
+        <h2>4. Key Workflows &amp; Features</h2>
+
+        <h3>4.1 Dual-Tier Authentication Flow</h3>
+        <ol>
+            <li><strong>Public/Guest Access Gateway (<code>/</code>)</strong>:
+                <ul>
+                    <li>The root index route <a href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/users/routes.py#L12-L27"><code>index()</code></a> renders <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/templates/frontend.html">frontend.html</a>.</li>
+                    <li>If an authenticated user enters, they are forwarded to <code>/intro</code>.</li>
+                    <li>The login form specifically verifies if the user is <code>"GuestUser"</code>. If valid, it logs in as the guest and redirects to <code>/intro</code>. Other accounts are rejected here with <code>"Incorrect Guest Id"</code>.</li>
+                </ul>
+            </li>
+            <li><strong>Member/Administrator Access (<code>/login</code>)</strong>:
+                <ul>
+                    <li>The standard <a href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/users/routes.py#L47-L60"><code>login()</code></a> route allows full member/admin authentication.</li>
+                    <li>If a <code>GuestUser</code> visits <code>/login</code>, they are permitted to log in as a member.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h3>4.2 Trade Inspection &amp; PDF Detach Viewer</h3>
+        <ul>
+            <li>Posts contain a <strong>"View Trades"</strong> trigger in <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/templates/post.html#L18-L38">post.html</a>.</li>
+            <li>Clicking executes <code>myDetach()</code>, which opens a popup window pointing to <code>/detach_viewer/&lt;weekly_id&gt;</code>.</li>
+            <li><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/templates/detach_viewer.html">detach_viewer.html</a> implements a custom JavaScript controller:
+                <ul>
+                    <li>Fetches the weekly PDF via XHR with progress tracking (<code>0% - 100%</code>).</li>
+                    <li>Detects browser engine (e.g. Microsoft Edge vs Chromium) to append <code>#view=FitV</code> or <code>#view=Fit</code>.</li>
+                    <li>Embeds the PDF in a full-viewport element once loaded and provides a retry mechanism on failure.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>4.3 Git Push Automation Tool (<code>git_push.py</code>)</h3>
+        <ul>
+            <li>Standalone Tkinter desktop utility.</li>
+            <li>Provides a 5-step guided wizard:
+                <ol>
+                    <li>Initial pre-check, fetch, and stash status.</li>
+                    <li>Staging all changes (<code>git add -A</code>).</li>
+                    <li>Commit message dialog and execution.</li>
+                    <li>Remote update (<code>git push origin -u &lt;branch&gt;</code>).</li>
+                    <li>Verification and automated rollback capability (<code>git reset --soft HEAD~1</code>, <code>git push --force-with-lease</code>).</li>
+                </ol>
+            </li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <!-- SECTION 5 -->
+    <section id="section-5">
+        <h2>5. Security Vulnerabilities &amp; Critical Findings</h2>
+
+        <!-- Callout 1: CAUTION -->
+        <div class="callout callout-caution">
+            <div class="callout-title">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+                </svg>
+                <span>1. Hardcoded Secrets and Credentials in Version Control</span>
+            </div>
+            <div class="callout-content">
+                <p>In <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/config.py#L5-L17">flaskblog/config.py</a> and <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/append.ps1#L1-L4">append.ps1</a>:</p>
+                <ul>
+                    <li><code>SECRET_KEY = '5791628bb0b13ce0c676dfde280ba245'</code></li>
+                    <li><code>SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'</code></li>
+                    <li><code>MAIL_USERNAME = 'developmenttest1234abcd@gmail.com'</code></li>
+                    <li><code>MAIL_PASSWORD = '1234ABCD'</code></li>
+                </ul>
+                <p>The environment variable reads <code>os.environ.get(...)</code> are immediately overwritten by literal strings. Hardcoded credentials checked into git can lead to credential theft and session tampering.</p>
+            </div>
+        </div>
+
+        <!-- Callout 2: WARNING -->
+        <div class="callout callout-warning">
+            <div class="callout-title">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path>
+                </svg>
+                <span>2. Open Redirect Vulnerability in <code>/login</code></span>
+            </div>
+            <div class="callout-content">
+                <p>In <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/users/routes.py#L56-L57">flaskblog/users/routes.py</a>:</p>
+                <pre><code class="language-python">next_page = request.args.get('next')
+return redirect(next_page) if next_page else redirect(url_for('main.intro'))</code></pre>
+                <p><code>next_page</code> is not validated against host / netloc (e.g. using <code>werkzeug.urls.url_parse(next_page).netloc == ''</code>). An attacker can craft links such as <code>/login?next=https://malicious-phishing.com</code> to redirect authenticated users externally.</p>
+            </div>
+        </div>
+
+        <!-- Callout 3: WARNING -->
+        <div class="callout callout-warning">
+            <div class="callout-title">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path>
+                </svg>
+                <span>3. Unsanitized Content Injection (Stored XSS Risk)</span>
+            </div>
+            <div class="callout-content">
+                <p>In <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/templates/post.html#L42">flaskblog/templates/post.html</a>:</p>
+                <pre><code class="language-jinja2">{{ post.content|safe }}</code></pre>
+                <p>Applying the Jinja2 <code>|safe</code> filter disables auto-escaping. While currently only authenticated users can post, any unescaped <code>&lt;script&gt;</code> tags stored in post bodies will execute directly in users' browsers. If Markdown or formatted HTML is required, use a sanitizer library such as <code>bleach</code>.</p>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- SECTION 6 -->
+    <section id="section-6">
+        <h2>6. Bugs &amp; Technical Debt</h2>
+
+        <h3>6.1 Runtime Crash Risk in Post Detail View</h3>
+        <p>In <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/posts/routes.py#L27-L31">flaskblog/posts/routes.py:28</a>:</p>
+        <pre><code class="language-python">post = Post.query.get_or_404(post_id)
+if len(post.teaser_wkid) != 0:
+    weekly = post.teaser_wkid
+else:
+    weekly = ""</code></pre>
+        <p>In <code>Post</code> model, <code>teaser_wkid</code> is nullable (<code>db.Column(db.Text, nullable=True)</code>). If <code>post.teaser_wkid</code> is <code>None</code>, <code>len(post.teaser_wkid)</code> raises <code>TypeError: object of type 'NoneType' has no len()</code>, returning an HTTP 500 error.</p>
+        <p><strong>Fix:</strong> Use <code>if post.teaser_wkid:</code> instead of <code>if len(post.teaser_wkid) != 0:</code>.</p>
+
+        <h3>6.2 App Factory Configuration Bug</h3>
+        <p>In <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/__init__.py#L18-L20">flaskblog/__init__.py:18-20</a>:</p>
+        <pre><code class="language-python">def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(Config) # <-- BUG: Should be config_class</code></pre>
+        <p>The parameter <code>config_class</code> is accepted but ignored in favor of hardcoded <code>Config</code>. This prevents injecting alternate test or staging configurations.</p>
+
+        <h3>6.3 Deprecated Dependencies &amp; Breaking Changes</h3>
+        <ul>
+            <li><strong><code>itsdangerous.TimedJSONWebSignatureSerializer</code></strong> in <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/models.py#L2">flaskblog/models.py:2</a>:<br>
+            This class was removed in <code>itsdangerous</code> 2.1.0. Upgrading dependencies will break password reset tokens unless migrated to <code>itsdangerous.URLSafeTimedSerializer</code> or <code>pyjwt</code>.</li>
+            <li><strong><code>datetime.utcnow</code></strong> in <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/models.py#L41">flaskblog/models.py:41</a>:<br>
+            Deprecated in Python 3.12+. Modern code should use <code>datetime.now(timezone.utc)</code>.</li>
+            <li><strong>Flask 1.1.1 / SQLAlchemy 1.3.10</strong>:<br>
+            The environment is currently locked to 2019-era releases. Newer Flask (2.x/3.x) and SQLAlchemy (2.0) introduce breaking changes for query syntax (<code>Model.query.get</code> &rarr; <code>db.session.get</code>).</li>
+        </ul>
+
+        <h3>6.4 Missing <code>@login_required</code> Decorators</h3>
+        <p>In <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/main/routes.py#L15-L51">flaskblog/main/routes.py</a>, routes (<code>/intro</code>, <code>/methods</code>, <code>/trades</code>, <code>/pnl</code>, <code>/about</code>) manually repeat:</p>
+        <pre><code class="language-python">if current_user.is_authenticated:
+    return render_template(...)
+else:
+    return redirect(url_for('users.index'))</code></pre>
+        <p>This is boilerplate that should be replaced with Flask-Login's standard <code>@login_required</code> decorator.</p>
+
+        <h3>6.5 Template Markup Inconsistencies</h3>
+        <ul>
+            <li><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/templates/frontend.html#L14-L15">flaskblog/templates/frontend.html:14-15</a>: Duplicate closing <code>&lt;/head&gt;</code> tags.</li>
+            <li><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/templates/trades.html#L8">flaskblog/templates/trades.html:8</a>: Mismatched tag nesting (<code>&lt;a ...&gt;&lt;h3 ...&gt;...&lt;/a&gt;&lt;/h3&gt;</code>).</li>
+            <li><a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/templates/pnl.html">flaskblog/templates/pnl.html</a>: Page is a placeholder filled with Lorem Ipsum; does not yet implement the server-side static chart caching specification outlined in <code>ARCHITECTURE.html</code>.</li>
+            <li>Extraneous test files in <code>templates/</code>: <code>test.html</code>, <code>test - Copy.html</code>, and <code>layout.html.original</code>.</li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <!-- SECTION 7 -->
+    <section id="section-7">
+        <h2>7. Prioritized Recommendations</h2>
+
+        <div class="diagram-container">
+            <pre class="mermaid">
+graph LR
+    P1[Priority 1: Urgent Fixes] --> P2[Priority 2: Stability &amp; Hygiene]
+    P2 --> P3[Priority 3: Feature Completion]
+    P3 --> P4[Priority 4: Stack Modernization]
+            </pre>
+        </div>
+
+        <ol>
+            <li><strong>Security &amp; Secrets Remediation (High Priority)</strong>:
+                <ul>
+                    <li>Remove hardcoded credentials from <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/config.py">flaskblog/config.py</a> and <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/append.ps1">append.ps1</a>.</li>
+                    <li>Use a local <code>.env</code> file (ignored by <code>.gitignore</code>) loaded via <code>python-dotenv</code>.</li>
+                    <li>Validate <code>next_page</code> redirects in <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/users/routes.py">users/routes.py</a> with <code>url_parse</code>.</li>
+                </ul>
+            </li>
+            <li><strong>Defect Rectification (Immediate)</strong>:
+                <ul>
+                    <li>Fix <code>len(post.teaser_wkid)</code> in <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/posts/routes.py">flaskblog/posts/routes.py</a> to prevent 500 errors on null teaser IDs.</li>
+                    <li>Change <code>app.config.from_object(Config)</code> to <code>app.config.from_object(config_class)</code> in <a class="filepath" href="file:///C:/Users/evers/Documents/GitHub/WebBlog/flaskblog/__init__.py">flaskblog/__init__.py</a>.</li>
+                </ul>
+            </li>
+            <li><strong>Repository &amp; Template Cleanup</strong>:
+                <ul>
+                    <li>Remove unused test templates (<code>test.html</code>, <code>test - Copy.html</code>, <code>layout.html.original</code>).</li>
+                    <li>Fix HTML tag syntax in <code>frontend.html</code> and <code>trades.html</code>.</li>
+                    <li>Rename or relocate <code># This file contains the WSGI configuration require.py</code>.</li>
+                </ul>
+            </li>
+            <li><strong>P&amp;L Module Implementation</strong>:
+                <ul>
+                    <li>Implement the static chart caching pipeline specified in <code>ARCHITECTURE.html</code> for daily, weekly, and monthly performance visualizations.</li>
+                </ul>
+            </li>
+            <li><strong>Modernization &amp; Upgrade Path</strong>:
+                <ul>
+                    <li>Migrate token generation away from <code>TimedJSONWebSignatureSerializer</code> to prepare for Flask 2.x/3.x and Python 3.12+ compatibility.</li>
+                </ul>
+            </li>
+        </ol>
+    </section>
+
+    <footer class="doc-footer">
+        Generated from <code>codebase_analysis.md</code> &bull; WebBlog Architecture &amp; Codebase Documentation
+    </footer>
+
+</div>
+
+<!-- Scripts for Syntax Highlighting & Mermaid Diagrams -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script>
+    hljs.highlightAll();
+</script>
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral',
+        flowchart: {
+            useMaxWidth: true,
+            htmlLabels: true,
+            curve: 'basis'
+        }
+    });
+</script>
+
+</body>
+</html>
