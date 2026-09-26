@@ -19,5 +19,12 @@
     "target_filename": "weekly092126cap.jpg",
     "original_filename": "images.jpg",
     "blogpics_dir": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics"
+  },
+  "092826": {
+    "source_path": "C:\\Users\\colin\\Videos\\temp\\UPDATESITEDB\\32e2584f-a9d0-4497-8988-49c8e69bb39f.jpg",
+    "target_filepath": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics\\weekly092826cap.jpg",
+    "target_filename": "weekly092826cap.jpg",
+    "original_filename": "32e2584f-a9d0-4497-8988-49c8e69bb39f.jpg",
+    "blogpics_dir": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics"
   }
 }
