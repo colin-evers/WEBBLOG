@@ -40,5 +40,12 @@
     "target_filename": "weekly101226cap.jpg",
     "original_filename": "Capture.JPG",
     "blogpics_dir": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics"
+  },
+  "101926": {
+    "source_path": "C:\\Users\\colin\\Videos\\temp\\UPDATESITEDB\\ouroboros-uroboros-serpent-snake-vintage-woodcut-2Y6JEE6.jpg",
+    "target_filepath": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics\\weekly101926cap.jpg",
+    "target_filename": "weekly101926cap.jpg",
+    "original_filename": "ouroboros-uroboros-serpent-snake-vintage-woodcut-2Y6JEE6.jpg",
+    "blogpics_dir": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics"
   }
 }
