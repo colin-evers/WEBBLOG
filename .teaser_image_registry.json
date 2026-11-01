@@ -54,5 +54,12 @@
     "target_filename": "weekly102626cap.jpg",
     "original_filename": "FOUR-ASPECTS-OF-THE-MIND-01.jpg",
     "blogpics_dir": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics"
+  },
+  "110226": {
+    "source_path": "C:\\Users\\colin\\Videos\\temp\\UPDATESITEDB\\black-friday-fun1.jpg",
+    "target_filepath": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics\\weekly110226cap.jpg",
+    "target_filename": "weekly110226cap.jpg",
+    "original_filename": "black-friday-fun1.jpg",
+    "blogpics_dir": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics"
   }
 }
