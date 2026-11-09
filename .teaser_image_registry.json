@@ -61,5 +61,12 @@
     "target_filename": "weekly110226cap.jpg",
     "original_filename": "black-friday-fun1.jpg",
     "blogpics_dir": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics"
+  },
+  "110926": {
+    "source_path": "C:\\Users\\colin\\Videos\\temp\\UPDATESITEDB\\Capture.JPG",
+    "target_filepath": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics\\weekly110926cap.jpg",
+    "target_filename": "weekly110926cap.jpg",
+    "original_filename": "Capture.JPG",
+    "blogpics_dir": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics"
   }
 }
