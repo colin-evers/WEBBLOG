@@ -68,5 +68,12 @@
     "target_filename": "weekly110926cap.jpg",
     "original_filename": "Capture.JPG",
     "blogpics_dir": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics"
+  },
+  "111626": {
+    "source_path": "C:\\Users\\colin\\Videos\\temp\\UPDATESITEDB\\Smile.40-x-30cm-764x1024.jpg",
+    "target_filepath": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics\\weekly111626cap.jpg",
+    "target_filename": "weekly111626cap.jpg",
+    "original_filename": "Smile.40-x-30cm-764x1024.jpg",
+    "blogpics_dir": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics"
   }
 }
