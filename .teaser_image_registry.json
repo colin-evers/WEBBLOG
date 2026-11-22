@@ -75,5 +75,12 @@
     "target_filename": "weekly111626cap.jpg",
     "original_filename": "Smile.40-x-30cm-764x1024.jpg",
     "blogpics_dir": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics"
+  },
+  "112326": {
+    "source_path": "C:\\Users\\colin\\Videos\\temp\\UPDATESITEDB\\rat-race-artwork-by-david-regone-v0-opciaqkehr3f1.webp",
+    "target_filepath": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics\\weekly112326cap.jpg",
+    "target_filename": "weekly112326cap.jpg",
+    "original_filename": "rat-race-artwork-by-david-regone-v0-opciaqkehr3f1.webp",
+    "blogpics_dir": "C:\\Users\\colin\\Documents\\GitHub\\WEBBLOG\\flaskblog\\static\\img\\BlogPics"
   }
 }
